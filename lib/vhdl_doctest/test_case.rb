@@ -10,7 +10,7 @@ module VhdlDoctest
     end
 
     def to_vhdl
-      stimuli.join("\n") + "wait for 10 ns;\n" + assertion
+      stimuli.join("\n") + "\nwait for 10 ns;\n" + assertion
     end
 
     private

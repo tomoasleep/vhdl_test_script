@@ -27,13 +27,14 @@ module VhdlDoctest
     end
 
     def create_runner_script
+      require 'erb'
       @sh = File.join(@dir, "run.sh")
+      erb = ERB.new(File.read(
+        File.expand_path("../../../templetes/test_runner.sh.erb", __FILE__)))
+      erb = erb.result(binding)
+
       File.open(@sh, 'w') do |f|
-        f << "#!/bin/sh -e\n\n"
-        f << "cd #{@dir}\n"
-        f << "ghdl -a --ieee=synopsys -fexplicit --warn-default-binding --warn-binding --warn-library --warn-body --warn-specs --warn-unused #{dependencies.join(" ")} #{@dut_path} #{@test_file.path}\n"
-        f << "ghdl -e -Plibs/unisim --ieee=synopsys -fexplicit #{@test_file.test_name}\n"
-        f << "ghdl -r #{@test_file.test_name} --vcd=out.vcd --stop-time=10ms\n"
+        f << erb
       end
     end
 
