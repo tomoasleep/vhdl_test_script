@@ -1,11 +1,14 @@
 module VhdlDoctest::DSL
   class Base
+    attr_reader :package_names
+
     def self.dsl(&prc)
       @@proc = prc
     end
 
     def initialize(ports)
       @dup_ports = ports
+      @package_names = []
     end 
 
     def assign(*ports)
@@ -18,6 +21,10 @@ module VhdlDoctest::DSL
 
     def step(*ups)
       @cases << gen_step(ups)
+    end
+
+    def require_package(*names)
+      @package_names += names
     end
 
     def to_vhdl

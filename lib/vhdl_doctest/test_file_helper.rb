@@ -24,5 +24,11 @@ module VhdlDoctest
       @utils ||= File.read(
         File.expand_path("../../../templetes/util.vhd", __FILE__))
     end
+
+    def define_library_use(package_names)
+      libgroup = package_names.group_by {|n| n.split(".").first}
+      libgroup.map { |k, a| 
+        "library #{k};\n" + a.map {|l| "use #{l}.all;"}.join("\n")}.join("\n\n")
+    end
   end
 end

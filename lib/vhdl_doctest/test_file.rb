@@ -3,10 +3,11 @@ module VhdlDoctest
     attr_reader :cases
     include VhdlDoctest::TestFileHelper
 
-    def initialize(dut_entity, ports, cases)
+    def initialize(dut_entity, ports, cases, package_dependencies = []) 
       @dut_entity = dut_entity
       @ports = ports
       @cases = cases
+      @package_names = package_dependencies
     end
 
     def path

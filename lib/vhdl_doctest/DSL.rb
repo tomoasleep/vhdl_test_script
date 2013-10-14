@@ -8,6 +8,6 @@ module VhdlDoctest::DSL
     load(path)
     dsl_class = Object.const_get(dsl_klass).new(dut.ports)
 
-    VhdlDoctest::TestFile.new(dut.entity, dut.ports, dsl_class.cases)
+    VhdlDoctest::TestFile.new(dut.entity, dut.ports, dsl_class.cases, dsl_class.package_names)
   end
 end
