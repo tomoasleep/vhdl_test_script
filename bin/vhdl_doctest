@@ -23,7 +23,7 @@ require "vhdl_doctest"
 dut = VhdlDoctest::DUT.parse(ARGV[0])
 
 test_bench = if opts[:dsl] 
-               VhdlDoctest::DSL::TestBench.new(dut, opts[:dsl]).to_test_file
+               VhdlDoctest::DSL.load_dsl(dut, opts[:dsl])
              else
                dut.test_file
              end
