@@ -13,10 +13,10 @@ module VhdlDoctest::Types
     end
 
     def format(v)
-      if [0, 1].include? v.to_i
-        %Q{'#{v.to_i}'}
-      elsif v.class == String
+      if v.class == String
         v
+      elsif [0, 1].include? v.to_i
+        %Q{'#{v.to_i}'}
       else
         # TODO: define error class
         raise "unacceptable value error #{v}"
