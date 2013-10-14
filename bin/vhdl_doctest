@@ -3,11 +3,11 @@
 require 'trollop'
 
 opts = Trollop::options do
-  opt :dsl, "DSL file.", type: :string
+  opt :test, "Test DSL file.", type: :string
 end
 
 unless ARGV.size == 1 && File.file?(ARGV[0])
-  puts "Usage: vhdl_doctest VHDL_PATH"
+  puts "Usage: vhdl_doctest VHDL_PATH (--test TEST_FILE)"
   exit 1
 end
 
@@ -22,8 +22,8 @@ $:.unshift File.expand_path("../../lib", bin_file)
 require "vhdl_doctest"
 dut = VhdlDoctest::DUT.parse(ARGV[0])
 
-test_bench = if opts[:dsl] 
-               VhdlDoctest::DSL.load_dsl(dut, opts[:dsl])
+test_bench = if opts[:test] 
+               VhdlDoctest::DSL.load_dsl(dut, opts[:test])
              else
                dut.test_file
              end
