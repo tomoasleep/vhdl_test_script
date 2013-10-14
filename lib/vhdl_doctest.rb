@@ -8,6 +8,7 @@ require "vhdl_doctest/test_case"
 require "vhdl_doctest/dut"
 require "vhdl_doctest/test_parser"
 require "vhdl_doctest/result_formatter"
+require "vhdl_doctest/DSL"
 
 module VhdlDoctest
   # Your code goes here...
