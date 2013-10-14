@@ -17,7 +17,12 @@ module VhdlDoctest::Types
     end
 
     def format(v)
-      '"' + (2**@length + v).to_s(2)[-@length.. -1]+ '"'
+      case v
+      when String
+        v
+      else
+        '"' + (2**@length + v).to_s(2)[-@length.. -1]+ '"'
+      end
     end
 
     def self.parse(str)
