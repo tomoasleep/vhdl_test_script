@@ -4,6 +4,14 @@ module VhdlDoctest::Types
       'std_logic'
     end
 
+    def max_value
+      1
+    end
+
+    def min_value
+      0
+    end
+
     def format(v)
       if [0, 1].include? v.to_i
         %Q{'#{v.to_i}'}

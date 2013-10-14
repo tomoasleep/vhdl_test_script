@@ -4,6 +4,14 @@ module VhdlDoctest::Types
       @length = length
     end
 
+    def max_value
+      2**@length - 1
+    end
+
+    def min_value
+      0
+    end
+
     def to_vhdl
       "std_logic_vector(#{@length-1} downto 0)"
     end

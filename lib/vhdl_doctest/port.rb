@@ -19,7 +19,12 @@ module VhdlDoctest
     end
 
     def assignment(value)
-      "#@name <= #{@type.format(value)};"
+      case value 
+      when :rising_edge
+        [@type.min_value, @type.max_value].map {|v| "#@name <= #{@type.format(v)};"}.join("\nwait for 1 ns;\n")
+      else
+        "#@name <= #{@type.format(value)};"
+      end
     end
 
     def equation(value)

@@ -2,7 +2,8 @@ module VhdlDoctest
   class TestCase
     attr_reader :in_mapping, :out_mapping
     def initialize(mapping)
-      @in_mapping, @out_mapping = mapping.partition{ |port, _| port.in? }
+      ingroup, @out_mapping = mapping.partition{ |port, _| port.in? }
+      @clock_mapping, @in_mapping = ingroup.partition{ |_, v| v == :rising_edge }
       if @in_mapping.find { |_, v| v == :dont_care }
         raise NotImplementedError.new("Don't care for input value is not supported")
       end
@@ -15,7 +16,10 @@ module VhdlDoctest
 
     private
     def stimuli
-      @in_mapping.map do |port, value|
+      assign = @in_mapping.map do |port, value|
+        port.assignment(value)
+      end
+      assign += @clock_mapping.map do |port, value|
         port.assignment(value)
       end
     end
