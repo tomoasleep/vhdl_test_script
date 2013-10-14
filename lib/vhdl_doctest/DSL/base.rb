@@ -24,6 +24,10 @@ module VhdlDoctest::DSL
       cases.map(&:to_vhdl).join("\n")
     end
 
+    def _
+      :dont_care
+    end
+
     def cases
       invoke unless @cases
       @cases

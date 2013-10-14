@@ -4,9 +4,8 @@ module VhdlDoctest
     def initialize(mapping)
       ingroup, @out_mapping = mapping.partition{ |port, _| port.in? }
       @clock_mapping, @in_mapping = ingroup.partition{ |_, v| v == :rising_edge }
-      if @in_mapping.find { |_, v| v == :dont_care }
-        raise NotImplementedError.new("Don't care for input value is not supported")
-      end
+      @in_mapping.select! { |_, v| v != :dont_care }
+      @clock_mapping.select! { |_, v| v != :dont_care }
       @out_mapping.select!{ |k, v| v != :dont_care }
     end
 

@@ -108,17 +108,6 @@ module VhdlDoctest
 -- /TEST
 }}
 
-      specify { expect{ cases }.to raise_error(NotImplementedError) }
-    end
-
-    describe 'all assertions are dont_care' do
-      let(:input) { %q{
--- TEST
--- a   | b   | control | output | zero
--- 10  | -10 | 2       | -      | -
--- /TEST
-}}
-
       specify { cases.first.to_vhdl.should_not match /assert/ }
     end
 
