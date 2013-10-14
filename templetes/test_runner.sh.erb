@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-cd #{@dir}
+cd <%= @dir %>
 ghdl -a --ieee=synopsys -fexplicit --warn-default-binding --warn-binding --warn-library \
   --warn-body --warn-specs --warn-unused  <%= dependencies.join(" ") %> \
   <%= @dut_path %> <%= @test_file.path %>
