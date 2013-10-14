@@ -1,10 +1,16 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
+require 'trollop'
+
+opts = Trollop::options do
+  opt :dsl, "DSL file.", type: :string
+end
 
 unless ARGV.size == 1 && File.file?(ARGV[0])
   puts "Usage: vhdl_doctest VHDL_PATH"
   exit 1
 end
+
 
 # resolve bin path, ignoring symlinks
 require "pathname"
@@ -16,4 +22,10 @@ $:.unshift File.expand_path("../../lib", bin_file)
 require "vhdl_doctest"
 dut = VhdlDoctest::DUT.parse(ARGV[0])
 
-VhdlDoctest::TestRunner.new(STDOUT, ARGV[0], dut.test_file, dut.dependencies).run
+test_bench = if opts[:dsl] 
+               VhdlDoctest::DSL::TestBench.new(dut, opts[:dsl]).to_test_file
+             else
+               dut.test_file
+             end
+
+VhdlDoctest::TestRunner.new(STDOUT, ARGV[0], test_bench, dut.dependencies).run
