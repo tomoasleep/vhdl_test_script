@@ -49,7 +49,7 @@ module VhdlDoctest::DSL
       case ups.first
       when Hash
         VhdlDoctest::TestCase.new(
-          add_clockupdate(Hash[ups.first.map { |k, v| [testport_by_name(k), v]}])
+          add_clockupdate(Hash[ups.first.map { |k, v| [dupport_by_name(k), v]}])
         )
       else
         VhdlDoctest::TestCase.new(
