@@ -2,10 +2,10 @@
 require File.expand_path('../lib/vhdl_test_script/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["tomykaira"]
-  gem.email         = ["tomykaira@gmail.com"]
-  gem.description   = %q{Run parameterized test for VHDL written in doctest-like format.}
-  gem.summary       = %q{Run parameterized test for VHDL written in doctest-like format.}
+  gem.authors       = ["Tomoya Chiba", "tomykaira"]
+  gem.email         = ["tomo.asleep@gmail.com", "tomykaira@gmail.com"]
+  gem.description   = %q{Run parameterized test for VHDL written in DSL with Ruby.}
+  gem.summary       = %q{Run parameterized test for VHDL written in DSL with Ruby.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
