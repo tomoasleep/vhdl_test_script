@@ -43,7 +43,7 @@ module VhdlTestScript
       case ups.first
       when Hash
         assignments = remove_not_assign(
-          add_clockupdate(Hash[ups.first.map { |k, v| [scenario.port_by_name(k), v]}]))
+          add_clockupdate(Hash[ups.first.map { |k, v| [@scenario.port_by_name(k), v]}]))
         TestStep.new(
           *TestStep.divide_by_direction(assignments)
         )

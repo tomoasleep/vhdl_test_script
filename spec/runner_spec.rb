@@ -18,6 +18,13 @@ module VhdlTestScript
 
         it { should match "10 examples, 0 failures" }
       end
+
+      context "DSL.step can read hash arguments"
+        context "1 successful examples" do
+          let(:testfile) { "examples/latch_test_hash.rb" }
+
+          it { should match "1 examples, 0 failures" }
+        end
     end
   end
 end
