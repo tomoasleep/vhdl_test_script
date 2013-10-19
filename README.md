@@ -1,4 +1,4 @@
-# VhdlTestScrip
+# VhdlTestScript
 
 This is DSL with Ruby to create VHDL test bench easily and test runner.
 
