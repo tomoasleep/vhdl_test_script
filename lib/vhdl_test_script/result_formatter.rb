@@ -1,4 +1,4 @@
-module VhdlDoctest
+module VhdlTestScript
   class ResultFormatter
     def initialize(output)
       @output = output

@@ -1,7 +1,7 @@
-require 'vhdl_doctest/types/std_logic'
-require 'vhdl_doctest/types/std_logic_vector'
+require 'vhdl_test_script/types/std_logic'
+require 'vhdl_test_script/types/std_logic_vector'
 
-module VhdlDoctest
+module VhdlTestScript
   module Types
     def self.parse(str)
       Types.constants.each do |c|
@@ -11,7 +11,8 @@ module VhdlDoctest
           return result
         end
       end
-      raise "Type for #{str} is not found."
+      Subtype.new(str)
+      # raise "Type for #{str} is not found."
     end
   end
 end

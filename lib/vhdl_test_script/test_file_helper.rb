@@ -1,6 +1,6 @@
-module VhdlDoctest
+module VhdlTestScript
   module TestFileHelper
-    def ports_definitions(ports) 
+    def ports_definitions(ports)
       ports.map(&:port_definition).join(";\n")
     end
 
@@ -12,8 +12,8 @@ module VhdlDoctest
       ports.map(&:mapping).join(", ")
     end
 
-    def testcases_to_vhdl(cases)
-      cases.map(&:to_vhdl).join("\n\n")
+    def testcases_to_vhdl(steps)
+      steps.map(&:to_vhdl).join("\n\n")
     end
 
     def with_test_prefix(name)
@@ -26,9 +26,8 @@ module VhdlDoctest
     end
 
     def define_library_use(package_names)
-      libgroup = package_names.group_by {|n| n.split(".").first}
-      libgroup.map { |k, a| 
-        "library #{k};\n" + a.map {|l| "use #{l}.all;"}.join("\n")}.join("\n\n")
+      "library work;\n" + package_names.map { |package_name| "use work.#{package_name}.all;"}.
+        join("\n")
     end
   end
 end

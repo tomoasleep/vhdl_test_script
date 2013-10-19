@@ -1,4 +1,4 @@
-module VhdlDoctest
+module VhdlTestScript
   class Port
     attr_reader :name
 
@@ -19,12 +19,15 @@ module VhdlDoctest
     end
 
     def assignment(value)
-      case value 
-      when :rising_edge
-        [@type.min_value, @type.max_value].map {|v| "#@name <= #{@type.format(v)};"}.join("\nwait for 1 ns;\n")
-      else
-        "#@name <= #{@type.format(value)};"
-      end
+      "#@name <= #{@type.format(value)};"
+    end
+
+    def assignment_min
+      "#@name <= #{@type.format(@type.min_value)};"
+    end
+
+    def assignment_max
+      "#@name <= #{@type.format(@type.max_value)};"
     end
 
     def equation(value)

@@ -1,5 +1,5 @@
-LatchTest.dsl do
-  assign :a, :output
+VhdlTestScript.scenario "./latch.vhd" do
+  ports :a, :output
   clock :clk
 
   step 1, 1

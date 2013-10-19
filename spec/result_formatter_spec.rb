@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module VhdlDoctest
+module VhdlTestScript
   describe ResultFormatter do
     let(:dut_file) { "examples/alu.vhd/" }
     subject(:formatted_result) { described_class.new(output) }

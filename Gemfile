@@ -5,5 +5,5 @@ gemspec
 
 group :guard do
   gem 'guard-rspec'
-  gem 'guard-notifier-git_auto_commit'
+  # gem 'guard-notifier-git_auto_commit'
 end

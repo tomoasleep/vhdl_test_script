@@ -1,3 +1,3 @@
-module VhdlDoctest
+module VhdlTestScript
   VERSION = "0.0.5"
 end

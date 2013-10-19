@@ -22,7 +22,7 @@ architecture behave of state_machine is
 begin
   main: process(clk) begin
     if rising_edge(clk) then
-      case reset is 
+      case reset is
         when '1' =>
           current_state <= STATE_A;
         when others =>

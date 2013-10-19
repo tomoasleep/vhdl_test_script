@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module VhdlDoctest
+module VhdlTestScript
   describe Port do
     subject { Port.new('test', :in, Types::StdLogic.new) }
 

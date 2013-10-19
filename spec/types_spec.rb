@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module VhdlDoctest
+module VhdlTestScript
   describe Types do
     describe ".parse" do
       subject { Types.parse(string) }

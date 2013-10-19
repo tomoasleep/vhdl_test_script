@@ -1,7 +1,7 @@
-StateMachineTest.dsl do
-  assign :input, :reset, :state
+VhdlTestScript.scenario "./state_machine.vhd" do
+  ports :input, :reset, :state
   clock :clk
-  require_package "work.const_state", "work.const_order"
+  dependencies "./state_machine_lib.vhd"
 
   testcases = [
     ["ORDER_B", "STATE_B"],

@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+cd <%= @dir %>
+ghdl -a --ieee=synopsys -fexplicit --warn-default-binding --warn-binding --warn-library \
+  --warn-body --warn-specs --warn-unused  <%= @pathes.join(" ") %>
+ghdl -e -Plibs/unisim --ieee=synopsys -fexplicit <%= @unitname %>
+ghdl -r <%= @unitname %> --vcd=out.vcd --stop-time=10ms
