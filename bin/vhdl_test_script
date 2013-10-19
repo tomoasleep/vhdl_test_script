@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+unless ARGV.size == 1 && File.file?(ARGV[0])
+  puts "Usage: vhdl_test_script TEST_FILE"
+  exit 1
+end
+
+
+# resolve bin path, ignoring symlinks
+require "pathname"
+bin_file = Pathname.new(__FILE__).realpath
+
+# add self to libpath
+$:.unshift File.expand_path("../../lib", bin_file)
+
+require "vhdl_test_script"
+VhdlTestScript::Runner.new([ARGV[0]]).run
