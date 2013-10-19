@@ -15,9 +15,8 @@ module VhdlTestScript
     end
 
     def parse_options(options = {})
-      if options[:out]
-        VhdlTestScript.world.reporter = Reporter.new(options[:out])
-      end
+      out = options[:out] ? options[:out] : STDOUT
+      VhdlTestScript.world.reporter = Reporter.new(out)
     end
   end
 end
