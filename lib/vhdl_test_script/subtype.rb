@@ -13,7 +13,7 @@ module VhdlTestScript
     end
 
     def format(v)
-      raise unless origin_type || origin_type.primitive_type?
+      raise "#{@typename} has no primitive origin type" if !origin_type || !origin_type.primitive_type?
       origin_type.format(v)
     end
 
