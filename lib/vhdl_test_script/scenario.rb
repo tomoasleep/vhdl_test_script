@@ -1,4 +1,7 @@
 module VhdlTestScript
+  class NoEntityError < NameError
+  end
+
   class Scenario
     def self.describe(*all_args, &scenario_block)
       dut_path, *args = *all_args
@@ -10,13 +13,13 @@ module VhdlTestScript
     end
 
     attr_accessor :steps
-    attr_reader :example, :package_names
+    attr_reader :example, :package_names, :dut
     def initialize(dut_path, test_path, &scenario_block)
       @test_path = test_path
       @dut_path = File.expand_path(dut_path, File.dirname(@test_path))
       @scenario_block = scenario_block
       @mocks = {}; @entities = []; @steps = []; @package_names = [];
-      @dependencies = []; @dependencies_pathes = [];
+      @dependencies = []; @dependencies_pathes = []; @dummy_entities = {};
 
       load_dut(@dut_path)
       @testbench = TestBench.new(@dut, self)
@@ -50,21 +53,37 @@ module VhdlTestScript
 
     def run
       configure
-      test_files =
+      test_bench_file, *mock_files =
         [@testbench, *@mocks.map {|k,m| m}].map { |actor| actor.test_file.create(tmpdir)}
-      pathes = @dependencies_pathes + [@dut_path] + test_files.map(&:path)
+      pathes = @dependencies_pathes + mock_files.map(&:path) +
+        [@dut_path, test_bench_file.path]
       @runner_script =
-        RunnerScript.new(tmpdir, pathes, test_files.first.unitname)
+        RunnerScript.new(tmpdir, pathes, test_bench_file.unitname)
       Scenario.world.reporter.report_result(self, @runner_script.run)
     end
 
     def use_mock(entity_name)
-      entity = entity_by_name(entity_name)
-      @mocks[entity.name] = Mock.new(self, entity) if !@mocks[entity] && entity
+      entity = entity_by_name(entity_name.to_s)
+      if !entity
+        raise NoEntityError
+      elsif !@mocks[entity.name]
+        @mocks[entity.name] = Mock.new(entity, self)
+        @dummy_entities[entity.name] = VhdlTestScript::DSL::DummyEntity.new(entity)
+      else
+        @dummy_entities[entity.name]
+      end
     end
 
     def entity_by_name(name)
       @entities.find { |entity| entity.name == name }
+    end
+
+    def find_port(key)
+      if key.class == VhdlTestScript::Port
+        key
+      else
+        port_by_name(key)
+      end
     end
 
     def port_by_name(name)
@@ -79,6 +98,9 @@ module VhdlTestScript
     def entity_scan(parsers)
       parsers.each do |parser|
         @entities << parser.entity if parser.have_entity?
+        parser.components.each do |component|
+          @entities << component
+        end
       end
     end
 

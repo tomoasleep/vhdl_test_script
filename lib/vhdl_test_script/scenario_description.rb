@@ -3,7 +3,8 @@ module VhdlTestScript
     include VhdlTestScript::DSL
     def self.parse(scenario, &scenario_block)
       desc = new(scenario)
-      desc.instance_eval(&scenario_block)
+      dut_dummy = VhdlTestScript::DSL::DummyEntity.new(scenario.dut)
+      desc.instance_exec(dut_dummy, &scenario_block)
       desc
     end
 

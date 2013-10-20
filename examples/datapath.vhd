@@ -6,7 +6,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 entity datapath is
 
   port (
-    input   : in  std_logic_vector(2 downto 0);
+    input   : in  std_logic_vector(1 downto 0);
     clk : in  std_logic;
     output  : out std_logic_vector(2 downto 0)
     );
@@ -22,12 +22,18 @@ architecture behave of datapath is
     clk : in  std_logic
         );
   end component;
+
+  signal stin: std_logic := '0';
+  signal streset: std_logic := '1';
 begin  -- behave
-  datapath port map (
-  input => input,
-  reset => '0',
+
+  st: state_machine port map (
+  input => stin,
+  reset => streset,
   clk => clk,
   state => output);
 
+  streset <= input(1);
+  stin <= input(0);
 end behave;
 

@@ -1,3 +1,5 @@
+require "vhdl_test_script/dsl/dummy_entity"
+
 module VhdlTestScript
   module DSL
     def self.port_by_name(ports, name)
@@ -8,8 +10,8 @@ module VhdlTestScript
       assign_test_ports(*ports)
     end
 
-    def clock(name)
-      @clock = @scenario.port_by_name(name)
+    def clock(port)
+      @clock = @scenario.find_port(port)
     end
 
     def step(*ups)
@@ -20,12 +22,12 @@ module VhdlTestScript
       @scenario.load_dependencies(pathes)
     end
 
-    def require_package(*names)
-      @package_names += names
+    def use_mock(name)
+      use_mocks(name).first
     end
 
-    def use_mock(*names)
-      names.each do |name|
+    def use_mocks(*names)
+      names.map do |name|
         @scenario.use_mock(name)
       end
     end
@@ -36,14 +38,16 @@ module VhdlTestScript
 
     private
     def assign_test_ports(*names)
-      @testports = names.map{|i| @scenario.port_by_name i}
+      @testports = names.map do |i|
+        @scenario.find_port(i)
+      end
     end
 
     def gen_step(ups)
       case ups.first
       when Hash
         assignments = remove_not_assign(
-          add_clockupdate(Hash[ups.first.map { |k, v| [@scenario.port_by_name(k), v]}]))
+          add_clockupdate(Hash[ups.first.map { |k, v| [@scenario.find_port(k), v]}]))
         TestStep.new(
           *TestStep.divide_by_direction(assignments)
         )

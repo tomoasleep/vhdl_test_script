@@ -19,12 +19,21 @@ module VhdlTestScript
         it { should match "10 examples, 0 failures" }
       end
 
-      context "DSL.step can read hash arguments"
+      context "DSL.step can read hash arguments" do
         context "1 successful examples" do
           let(:testfile) { "examples/latch_test_hash.rb" }
 
           it { should match "1 examples, 0 failures" }
         end
+      end
+
+      context "use mock" do
+        context "4 successful examples" do
+          let(:testfile) { "examples/datapath_test.rb" }
+
+          it { should match "4 examples, 0 failures" }
+        end
+      end
     end
   end
 end
