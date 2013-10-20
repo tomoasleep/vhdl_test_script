@@ -34,6 +34,14 @@ module VhdlTestScript
           it { should match "4 examples, 0 failures" }
         end
       end
+
+      context "use subtype" do
+        context "10 successful examples" do
+          let(:testfile) { "examples/state_machine_subtype_test.rb" }
+
+          it { should match "10 examples, 0 failures" }
+        end
+      end
     end
   end
 end

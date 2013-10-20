@@ -11,7 +11,7 @@ module VhdlTestScript
           return result
         end
       end
-      Subtype.new(str)
+      VhdlTestScript::Subtype.new(str)
       # raise "Type for #{str} is not found."
     end
   end

@@ -40,7 +40,7 @@ module VhdlTestScript
       let (:vhdl_path) { 'examples/state_machine_lib.vhd' }
       subject(:packages) { VhdlParser.read(vhdl_path).packages }
 
-      it { should have(2).items }
+      it { should have(3).items }
       its('first.name') { should == "const_state" }
     end
   end

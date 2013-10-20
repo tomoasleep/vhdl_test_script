@@ -11,7 +11,7 @@ module VhdlTestScript
     CONSTANT_REGEXP =
       /constant\s*(?<constant_decs>.*?)$/im
     SUBTYPE_REGEXP =
-      /subtype\s*(?<subtype_name>[a-zA-Z_0-9]*)\s*is\s+(?<subtype_decs>.*?)/im
+      /subtype\s*(?<subtype_name>[a-zA-Z_0-9]*)\s*is\s+(?<subtype_decs>.*?)$/im
     class << self
       def read(path)
         new(File.read(path))
@@ -60,8 +60,8 @@ module VhdlTestScript
               constants[const_name.strip.downcase] =
                 VhdlTestScript::Types.parse(const_type.strip.downcase)
             elsif (s = line.match(SUBTYPE_REGEXP))
-              subtype_type = s[:subtype_decs].split(":=").downcase
-              constants[s[:subtype_name].downcase] =
+              subtype_type = s[:subtype_decs].split(":=").first.downcase
+              subtypes[s[:subtype_name].downcase] =
                 VhdlTestScript::Types.parse(subtype_type)
             end
           end

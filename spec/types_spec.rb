@@ -29,11 +29,6 @@ module VhdlTestScript
         let(:string) { 'STD_LOGIC_VECTOR(2 DOWNTO 0)' }
         it { should be_a Types::StdLogicVector }
       end
-
-      describe 'unknown' do
-        let(:string) { 'unkonwn' }
-        specify { expect { subject }.to raise_error }
-      end
     end
   end
 end
