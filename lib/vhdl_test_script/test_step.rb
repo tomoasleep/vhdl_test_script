@@ -46,10 +46,10 @@ module VhdlTestScript
     end
 
     def assertion
-      inputs = @in_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ")
+      inputs = @in_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
       return '' if @out_mapping.empty?
       cond = @out_mapping.map { |port, value| port.equation(value) }.join(" and ")
-      expected = @out_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ")
+      expected = @out_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
       actual = @out_mapping.map { |port, value| "#{port.name} = \" & to_string(#{port.name}) & \"" }.join(", ")
       %Q{assert #{ cond } report "FAILED: #{inputs} expected to #{expected}, but #{actual}" severity warning;}
     end
