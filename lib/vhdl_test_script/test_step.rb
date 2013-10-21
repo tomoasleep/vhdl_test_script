@@ -47,10 +47,7 @@ module VhdlTestScript
 
     def assertion
       inputs = @in_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ")
-      if @out_mapping.empty?
-        warn "There is no assertion for #{inputs}."
-        return ''
-      end
+      return '' if @out_mapping.empty?
       cond = @out_mapping.map { |port, value| port.equation(value) }.join(" and ")
       expected = @out_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ")
       actual = @out_mapping.map { |port, value| "#{port.name} = \" & to_string(#{port.name}) & \"" }.join(", ")
