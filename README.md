@@ -8,7 +8,9 @@ This uses GHDL for compiling and running VHDL.  Please download from [GHDL Main/
 
 ## Installation
 
-    $ gem install vhdl_test_script
+    $ git clone git@github.com:tomoasleep/vhdl_test_script.git
+    $ cd vhdl_test_script
+    $ rake install
 
 Install GHDL from [GHDL Main/Home Page](http://ghdl.free.fr).
 
