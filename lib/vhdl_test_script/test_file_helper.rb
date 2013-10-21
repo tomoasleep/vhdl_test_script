@@ -20,13 +20,8 @@ module VhdlTestScript
       "testbench_#{name}"
     end
 
-    def utils
-      @utils ||= File.read(
-        File.expand_path("../../../templetes/util.vhd", __FILE__))
-    end
-
     def define_library_use(package_names)
-      "library work;\n" + package_names.map { |package_name| "use work.#{package_name}.all;"}.
+      package_names.map { |package_name| "use work.#{package_name}.all;"}.
         join("\n")
     end
   end

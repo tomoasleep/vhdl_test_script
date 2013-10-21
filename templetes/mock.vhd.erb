@@ -4,6 +4,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 
+library work;
+use work.vhdl_test_script_utils.all;
 <%= define_library_use(scenario.package_names) %>
 
 entity <%= entity.name %> is
@@ -13,7 +15,6 @@ entity <%= entity.name %> is
 end <%= entity.name %>;
 
 architecture sim of <%= entity.name %> is
-  <%= utils %>
 begin
   process begin
     <%= testcases_to_vhdl(actor.steps) %>
