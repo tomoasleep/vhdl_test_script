@@ -1,7 +1,7 @@
 module VhdlTestScript
   class World
-    attr_accessor :reporter, :current_test_path
-    attr_reader :vhdl_list, :dut, :scenario_list
+    attr_accessor :current_test_path
+    attr_reader :vhdl_list, :dut, :scenario_list, :reporter
     def initialize
       @vhdl_list = []
       @scenario_list = []
@@ -31,6 +31,10 @@ module VhdlTestScript
 
     def register_const_type(const_name, type)
       @constants[const_name.strip.downcase] = type
+    end
+
+    def register_output(out = STDOUT)
+      @reporter = Reporter.new(out)
     end
   end
 end
