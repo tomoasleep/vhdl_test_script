@@ -4,15 +4,17 @@ module VhdlTestScript
       @out = out
     end
 
-    def report_result(scenario, result)
-      @out << result
-      formatter = VhdlTestScript::ResultFormatter.new(result)
+    def report_result(scenario, result_formatter)
       @out << "\n\n\n"
-      @out << formatter.format
-      unless formatter.compile_error?
-        @out << "\n#{scenario.steps.length} examples, #{formatter.count_failure} failures\n"
+      @out << result_formatter.format
+      unless result_formatter.compile_error?
+        @out << "\n#{scenario.steps.length} examples, #{result_formatter.count_failure} failures\n"
       end
       @out << "\nTest directory: #{scenario.tmpdir}\n"
+    end
+
+    def output(output)
+      @out << output
     end
   end
 end

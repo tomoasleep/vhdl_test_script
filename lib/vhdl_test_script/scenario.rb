@@ -59,7 +59,9 @@ module VhdlTestScript
         [@dut_path, test_bench_file.path]
       @runner_script =
         RunnerScript.new(tmpdir, pathes, test_bench_file.unitname)
-      Scenario.world.reporter.report_result(self, @runner_script.run)
+      run_test
+      report_result
+      self
     end
 
     def use_mock(entity_name)
@@ -117,6 +119,17 @@ module VhdlTestScript
     def configure
       @description ||= ScenarioDescription.parse(self, &@scenario_block)
       self
+    end
+
+    private
+    def run_test
+      @output = @runner_script.run
+      @result_formatter = ResultFormatter.new(@output)
+    end
+
+    def report_result
+      Scenario.world.reporter.output(@output)
+      Scenario.world.reporter.report_result(self, @result_formatter)
     end
   end
 end
