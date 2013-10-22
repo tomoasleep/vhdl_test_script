@@ -52,13 +52,8 @@ module VhdlTestScript
     end
 
     def run
-      configure
-      test_bench_file, *mock_files =
-        [@testbench, *@mocks.map {|k,m| m}].map { |actor| actor.test_file.create(tmpdir)}
-      pathes = @dependencies_pathes + mock_files.map(&:path) +
-        [@dut_path, test_bench_file.path]
-      @runner_script =
-        RunnerScript.new(tmpdir, pathes, test_bench_file.unitname)
+      parse_description
+      create_test_files
       run_test
       report_result
       self
@@ -116,9 +111,17 @@ module VhdlTestScript
       end
     end
 
-    def configure
+    def parse_description
       @description ||= ScenarioDescription.parse(self, &@scenario_block)
       self
+    end
+
+    def create_test_files
+      test_bench_file, *mock_files =
+        [@testbench, *@mocks.map {|k,m| m}].map { |actor| actor.test_file.create(tmpdir)}
+      pathes = @dependencies_pathes + mock_files.map(&:path)
+      @runner_script =
+        RunnerScript.new(tmpdir, pathes, @dut_path, test_bench_file.path, test_bench_file.unitname)
     end
 
     private

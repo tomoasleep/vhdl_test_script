@@ -2,11 +2,11 @@ module VhdlTestScript
   UTIL_PATH = File.expand_path("../../../templetes/util.vhd", __FILE__)
 
   class RunnerScript
-    def initialize(dir, pathes, unitname)
-      #@testbench_path = testbench_path
-      #@dut_path = dut_path
+    def initialize(dir, dependency_pathes, dut_path, testbench_path, unitname)
+      @testbench_path = testbench_path
+      @dut_path = dut_path
       #@mock_pathes = mock_pathes
-      @pathes = [UTIL_PATH] + pathes
+      @dependency_pathes = [UTIL_PATH] + dependency_pathes
       @dir = dir
       @unitname = unitname
       create_runner_script
