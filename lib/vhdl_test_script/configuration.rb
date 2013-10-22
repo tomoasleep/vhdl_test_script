@@ -16,7 +16,7 @@ module VhdlTestScript
 
     def parse_options(options = {})
       out = options[:out] ? options[:out] : STDOUT
-      VhdlTestScript.world.register_output(out)
+      VhdlTestScript.world.register_out(out)
     end
   end
 end

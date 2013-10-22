@@ -33,7 +33,7 @@ module VhdlTestScript
       @constants[const_name.strip.downcase] = type
     end
 
-    def register_output(out = STDOUT)
+    def register_out(out = STDOUT)
       @reporter = Reporter.new(out)
     end
   end
