@@ -124,6 +124,10 @@ module VhdlTestScript
         RunnerScript.new(tmpdir, pathes, @dut_path, test_bench_file.path, test_bench_file.unitname)
     end
 
+    def result
+      @result_formatter
+    end
+
     private
     def run_test
       @output = @runner_script.run
