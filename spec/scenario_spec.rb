@@ -148,6 +148,27 @@ module VhdlTestScript
           it { expect(subject.steps.length).to eq(10) }
         end
       end
+
+      context "can use unix regexp" do
+        context "3 successful steps" do
+          let(:dut_path) { "../examples/datapath.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            ports :input, :output
+            clock :clk
+            dependencies "../examples/components/*"
+
+
+            step 1, 1
+            step 2, 6
+            step 3, 7
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(3)
+          }
+        end
+      end
     end
   end
 end

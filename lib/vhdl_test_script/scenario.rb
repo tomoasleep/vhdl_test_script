@@ -26,8 +26,9 @@ module VhdlTestScript
     end
 
     def load_dependencies(files)
-      files = files.map { |f| File.expand_path(f, File.dirname(@test_path))}
-      newfiles = (files - @dependencies_pathes)
+      abs_pathes = files.map { |f| File.expand_path(f, File.dirname(@test_path))}
+      files =  abs_pathes.map { |f| Dir[f] }.flatten
+      newfiles = (files - @dependencies_pathes - [@dut_path])
       newdps = newfiles.map do |f|
         VhdlParser.read(f)
       end
