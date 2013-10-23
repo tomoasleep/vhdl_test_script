@@ -14,8 +14,10 @@ module VhdlTestScript
             step 1, 1
           } }
 
-          it { expect(subject.result.succeeded?).to be_true }
-          it { expect(subject.steps.length).to eq(1) }
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(1)
+          }
         end
 
         context "1 fail step" do
@@ -25,9 +27,11 @@ module VhdlTestScript
             step 1, 0
           } }
 
-          it { expect(subject.result.failed?).to be_true }
-          it { expect(subject.result.count_failure).to eq(1) }
-          it { expect(subject.steps.length).to eq(1) }
+          it {
+            expect(subject.result.failed?).to be_true
+            expect(subject.result.count_failure).to eq(1)
+            expect(subject.steps.length).to eq(1)
+          }
         end
       end
 
@@ -40,9 +44,11 @@ module VhdlTestScript
             step 0, 0
           } }
 
-          it { expect(subject.result.failed?).to be_true }
-          it { expect(subject.result.count_failure).to eq(2) }
-          it { expect(subject.steps.length).to eq(2) }
+          it {
+            expect(subject.result.failed?).to be_true
+            expect(subject.result.count_failure).to eq(2)
+            expect(subject.steps.length).to eq(2)
+          }
         end
       end
 
@@ -58,8 +64,10 @@ module VhdlTestScript
             step _, 2
           } }
 
-          it { expect(subject.result.succeeded?).to be_true }
-          it { expect(subject.steps.length).to eq(4) }
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(4)
+          }
         end
       end
 
@@ -91,8 +99,10 @@ module VhdlTestScript
             step 3, 1, 1, 1, 1
           } }
 
-          it { expect(subject.result.succeeded?).to be_true }
-          it { expect(subject.steps.length).to eq(4) }
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(4)
+          }
         end
       end
 
@@ -111,8 +121,10 @@ module VhdlTestScript
             step 0, "STATE_C"
           } }
 
-          it { expect(subject.result.succeeded?).to be_true }
-          it { expect(subject.steps.length).to eq(3) }
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(3) 
+          }
         end
       end
 
@@ -144,8 +156,10 @@ module VhdlTestScript
 
           } }
 
-          it { expect(subject.result.succeeded?).to be_true }
-          it { expect(subject.steps.length).to eq(10) }
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(10)
+          }
         end
       end
 
