@@ -1,6 +1,6 @@
 module VhdlTestScript::DSL
   class StepBlock
-    attr_reader :assign_ports, :before_assert_ports, :after_assert_ports, :testports
+    attr_reader :assign_ports, :assert_ports_before, :assert_ports_after, :testports
     def initialize(testports)
       @testports = testports
     end
@@ -9,12 +9,12 @@ module VhdlTestScript::DSL
       @assign_ports = ups
     end
 
-    def before_assert(*ups)
-      @before_assert_ports = ups
+    def assert_before(*ups)
+      @assert_ports_before = ups
     end
 
-    def after_assert(*ups)
-      @after_assert_ports = ups
+    def assert_after(*ups)
+      @assert_ports_after = ups
     end
 
     def _

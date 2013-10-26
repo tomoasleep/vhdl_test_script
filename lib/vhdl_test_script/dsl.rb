@@ -63,7 +63,7 @@ module VhdlTestScript
 
     def analyze_block_step(step_block_parser)
       pa = step_block_parser
-      step_ports = [pa.assign_ports, pa.before_assert_ports, pa.after_assert_ports].
+      step_ports = [pa.assign_ports, pa.assert_ports_before, pa.assert_ports_after].
         map { |m| parse_step_arguments(m, pa.testports) }
       clock_port = if @clock then {@clock => :rising_edge} else {} end
       TestStep.new(*step_ports, clock_port)

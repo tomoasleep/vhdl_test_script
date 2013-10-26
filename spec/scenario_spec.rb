@@ -13,8 +13,8 @@ module VhdlTestScript
 
           step do
             assign input: 2, update: 1
-            before_assert reg: 1
-            after_assert reg: 2, output: 2
+            assert_before reg: 1
+            assert_after reg: 2, output: 2
           end
         } }
 
@@ -219,8 +219,8 @@ module VhdlTestScript
             step 1, 1, 1, 1
             step do
               assign input: 2, update: 1
-              before_assert reg: 1
-              after_assert reg: 2, output: 2
+              assert_before reg: 1
+              assert_after reg: 2, output: 2
             end
           } }
 
