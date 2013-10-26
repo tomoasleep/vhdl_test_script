@@ -18,9 +18,9 @@ module VhdlTestScript
     end
 
     def to_vhdl
-      stimuli.join("\n") + "\n" + down_clock.join("\n") + "\nwait for 1 ns;\n" +
-        assertion(@assert_mapping_before) + up_clock.join("\n") +
-        "\nwait for 1 ns;\n" + assertion(@assert_mapping_after)
+      stimuli.join("\n") + "\n" + down_clock.join("\n") + "\nwait for 0.5 ns;\n" +
+        assertion(@assert_mapping_before) + "\nwait for 0.5 ns;\n" + up_clock.join("\n") +
+        "\nwait for 0.5 ns;\n" + assertion(@assert_mapping_after) + "\nwait for 0.5 ns;\n"
     end
 
     def in(ports)

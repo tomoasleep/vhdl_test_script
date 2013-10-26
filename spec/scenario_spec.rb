@@ -210,7 +210,7 @@ module VhdlTestScript
       end
 
       context "can use group step" do
-        context "2 successful steps" do
+        context "3 successful steps" do
           let(:dut_path) { "../examples/register_file.vhd" }
           let(:test_proc) { Proc.new { |dut|
             ports :input, :output, :update, :reg
@@ -221,6 +221,33 @@ module VhdlTestScript
               assign input: 2, update: 1
               assert_before reg: 1
               assert_after reg: 2, output: 2
+            end
+            step do
+              assign input: 2, update: 1
+              assert_after reg: 2, output: 2
+            end
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(3)
+          }
+        end
+
+        context "2 successful steps" do
+          let(:dut_path) { "../examples/register_file.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            cl = use_mock :calculator
+            clock dut.clk
+
+            step do
+              assign dut.input => 2, dut.update => 1, cl.output => 4
+              assert_after dut.calc_result => 4, dut.output => 2
+            end
+            step do
+              assign dut.input => 3, dut.update => 1, cl.output => 6
+              assert_before dut.calc_result => 4
+              assert_after dut.calc_result => 6, dut.output => 3
             end
           } }
 

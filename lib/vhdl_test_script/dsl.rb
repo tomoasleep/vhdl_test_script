@@ -70,6 +70,7 @@ module VhdlTestScript
     end
 
     def parse_step_arguments(ups, testports = @testports)
+      return {} if ups.empty?
       case ups.first
       when Hash
         assignments = remove_not_assign(

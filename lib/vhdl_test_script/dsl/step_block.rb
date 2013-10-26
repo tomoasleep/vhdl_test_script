@@ -3,6 +3,9 @@ module VhdlTestScript::DSL
     attr_reader :assign_ports, :assert_ports_before, :assert_ports_after, :testports
     def initialize(testports)
       @testports = testports
+      @assign_ports = []
+      @assert_ports_before = []
+      @assert_ports_after = []
     end
 
     def assign(*ups)
