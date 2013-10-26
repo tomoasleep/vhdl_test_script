@@ -1,9 +1,34 @@
 require 'spec_helper'
 module VhdlTestScript
   describe Scenario do
+    describe "scenario" do
+      before { VhdlTestScript.world.register_out(StringIO.new) }
+      subject(:scenario) { Scenario.new(dut_path, File.expand_path(__FILE__), &test_proc).parse_description }
+
+      context "parse step block" do
+        let(:dut_path) { "../examples/register_file.vhd" }
+        let(:test_proc) { Proc.new { |dut|
+          ports :input, :output, :update, :reg
+          clock :clk
+
+          step do
+            assign input: 2, update: 1
+            before_assert reg: 1
+            after_assert reg: 2, output: 2
+          end
+        } }
+
+        it {
+          expect(subject.steps.first.assign_mapping.length).to eq(2)
+          expect(subject.steps.first.assert_mapping_before.length).to eq(1)
+          expect(subject.steps.first.assert_mapping_after.length).to eq(2)
+        }
+      end
+    end
+
     describe ".run" do
       before { VhdlTestScript.world.register_out(StringIO.new) }
-      subject { Scenario.new(dut_path, File.expand_path(__FILE__), &test_proc).run }
+      subject(".run") { Scenario.new(dut_path, File.expand_path(__FILE__), &test_proc).run }
 
       context "assign clock" do
         let(:dut_path) { "../examples/latch.vhd" }
@@ -180,6 +205,28 @@ module VhdlTestScript
           it {
             expect(subject.result.succeeded?).to be_true
             expect(subject.steps.length).to eq(3)
+          }
+        end
+      end
+
+      context "can use group step" do
+        context "2 successful steps" do
+          let(:dut_path) { "../examples/register_file.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            ports :input, :output, :update, :reg
+            clock :clk
+
+            step 1, 1, 1, 1
+            step do
+              assign input: 2, update: 1
+              before_assert reg: 1
+              after_assert reg: 2, output: 2
+            end
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(2)
           }
         end
       end

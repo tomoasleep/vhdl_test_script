@@ -1,4 +1,5 @@
 require "vhdl_test_script/dsl/dummy_entity"
+require "vhdl_test_script/dsl/step_block"
 
 module VhdlTestScript
   module DSL
@@ -14,8 +15,12 @@ module VhdlTestScript
       @clock = @scenario.find_port(port)
     end
 
-    def step(*ups)
-      @scenario.steps << gen_step(ups)
+    def step(*ups, &block)
+      if block
+        step_block(&block)
+      else
+        @scenario.steps << gen_step(ups)
+      end
     end
 
     def dependencies(*pathes)
@@ -43,19 +48,34 @@ module VhdlTestScript
       end
     end
 
+    def step_block(&block)
+      step_block_parser = StepBlock.new(@testports)
+      step_block_parser.instance_eval &block
+      @scenario.steps << analyze_block_step(step_block_parser)
+    end
+
     def gen_step(ups)
+      assignments = parse_step_arguments(ups)
+      TestStep.new(
+        *TestStep.divide_by_direction(add_clockupdate(assignments))
+      )
+    end
+
+    def analyze_block_step(step_block_parser)
+      pa = step_block_parser
+      step_ports = [pa.assign_ports, pa.before_assert_ports, pa.after_assert_ports].
+        map { |m| parse_step_arguments(m, pa.testports) }
+      clock_port = if @clock then {@clock => :rising_edge} else {} end
+      TestStep.new(*step_ports, clock_port)
+    end
+
+    def parse_step_arguments(ups, testports = @testports)
       case ups.first
       when Hash
         assignments = remove_not_assign(
-          add_clockupdate(Hash[ups.first.map { |k, v| [@scenario.find_port(k), v]}]))
-        TestStep.new(
-          *TestStep.divide_by_direction(assignments)
-        )
+          (Hash[ups.first.map { |k, v| [@scenario.find_port(k), v]}]))
       else
-        assignments = remove_not_assign(add_clockupdate(Hash[@testports.zip(ups)]))
-        TestStep.new(
-          *TestStep.divide_by_direction(assignments)
-        )
+        assignments = remove_not_assign(Hash[testports.zip(ups)])
       end
     end
 
