@@ -1,32 +1,30 @@
 module VhdlTestScript
   class TestStep
-    attr_reader :in_mapping, :out_mapping, :colck_mapping
+    attr_reader :assign_mapping, :assert_mapping_before, :assert_mapping_after, :clock_mapping
     def self.divide_by_direction(mapping)
-      ingroup, out_mapping = mapping.
+      ingroup, assert_mapping = mapping.
         partition{ |port, _| port.can_assign? }
 
-      clock_mapping, in_mapping = ingroup.partition{ |_, v| v == :rising_edge }
-      [in_mapping, out_mapping, clock_mapping]
+      clock_mapping, assign_mapping = ingroup.partition{ |_, v| v == :rising_edge }
+      [assign_mapping, Hash.new, assert_mapping, clock_mapping]
     end
 
-    def initialize(in_mapping, out_mapping, clock_mapping, origin_step = nil)
-      @in_mapping = in_mapping
-      @out_mapping = out_mapping
+    def initialize(assign_mapping, assert_mapping_before, assert_mapping_after, clock_mapping, origin_step = nil)
+      @assign_mapping = assign_mapping
+      @assert_mapping_before = assert_mapping_before
+      @assert_mapping_after = assert_mapping_after
       @clock_mapping = clock_mapping
       @origin = origin_step
     end
 
     def to_vhdl
-      stimuli.join("\n") + down_clock.join("\n") + "\nwait for 1 ns;\n" + up_clock.join("\n") +
-        "\nwait for 1 ns;\n" + assertion
-    end
-
-    def reverse
-      TestStep.new(@out_mapping, @in_mapping, @clock_mapping, origin)
+      stimuli.join("\n") + "\n" + down_clock.join("\n") + "\nwait for 1 ns;\n" +
+        assertion(@assert_mapping_before) + up_clock.join("\n") +
+        "\nwait for 1 ns;\n" + assertion(@assert_mapping_after)
     end
 
     def in(ports)
-      mapping = [@in_mapping, @out_mapping, @clock_mapping].
+      mapping = [@assign_mapping, @assert_mapping_before, @assert_mapping_after, @clock_mapping].
         map { |m| m.select { |p,_| ports.member?(p) } }
       TestStep.new(*mapping, origin)
     end
@@ -37,7 +35,7 @@ module VhdlTestScript
 
     private
     def stimuli
-      @in_mapping.map do |port, value|
+      @assign_mapping.map do |port, value|
         port.assignment(value)
       end
     end
@@ -50,13 +48,13 @@ module VhdlTestScript
       @clock_mapping.map { |port, _| port.assignment_max }
     end
 
-    def assertion
-      inputs = @in_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
-      return '' if @out_mapping.empty?
-      cond = @out_mapping.map { |port, value| port.equation(value) }.join(" and ")
-      expected = @out_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
-      actual = @out_mapping.map { |port, value| "#{port.name} = \" & to_string(#{port.name}) & \"" }.join(", ")
-      %Q{assert #{ cond } report "FAILED: #{inputs} expected to #{expected}, but #{actual}" severity warning;}
+    def assertion(mapping)
+      inputs = @assign_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
+      return '' if mapping.empty?
+      cond = mapping.map { |port, value| port.equation(value) }.join(" and ")
+      expected = mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
+      actual = mapping.map { |port, value| "#{port.name} = \" & to_string(#{port.name}) & \"" }.join(", ")
+      %Q{assert #{ cond } report "FAILED: #{inputs} expected to #{expected}, but #{actual}" severity warning;\n}
     end
   end
 end
