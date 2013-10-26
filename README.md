@@ -1,6 +1,6 @@
 # VhdlTestScript
 
-This is DSL with Ruby to create VHDL test bench easily and test runner.
+This is DSL with Ruby to create VHDL test bench easily and test runner. (This Project is forked from [tomykaira/vhdl_doctest](https://github.com/tomykaira/vhdl_doctest))
 
 ## Dependency
 
