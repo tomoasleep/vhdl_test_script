@@ -11,5 +11,9 @@ module VhdlTestScript
     def testbench(scenario)
       @testbench ||= TestFile.new(entity, scenario)
     end
+
+    def mocknize
+      Entity.new(@name, @ports.map(&:assign_abilities_reverse) , @generics, @components)
+    end
   end
 end

@@ -35,7 +35,6 @@ module VhdlTestScript
       @dependencies += newdps
       @dependencies_pathes += newfiles
 
-      entity_scan(newdps)
       packages_scan(newdps)
     end
 
@@ -43,7 +42,6 @@ module VhdlTestScript
       parser = VhdlParser.read(path)
       @dut = parser.entity
 
-      entity_scan([parser])
       packages_scan([parser])
     end
 
@@ -61,19 +59,19 @@ module VhdlTestScript
     end
 
     def use_mock(entity_name)
-      entity = entity_by_name(entity_name.to_s)
-      if !entity
+      original_entity = @dut.components.find { |c| c.name == entity_name.to_s }
+      if !original_entity
         raise NoEntityError
-      elsif !@mocks[entity.name]
-        @mocks[entity.name] = Mock.new(entity, self)
-        @dummy_entities[entity.name] = VhdlTestScript::DSL::DummyEntity.new(entity)
+      elsif !@mocks[original_entity.name]
+        @mocks[original_entity.name] = (mock = Mock.new(original_entity, self))
+        @dummy_entities[original_entity.name] = VhdlTestScript::DSL::DummyEntity.new(mock.entity)
       else
-        @dummy_entities[entity.name]
+        @dummy_entities[original_entity.name]
       end
     end
 
-    def entity_by_name(name)
-      @entities.find { |entity| entity.name == name }
+    def entities
+      [@dut, *@mocks.map(&:entity)]
     end
 
     def find_port(key)
@@ -85,21 +83,11 @@ module VhdlTestScript
     end
 
     def port_by_name(name)
-      @entities.each do |entity|
+      entities.each do |entity|
         res = entity.ports.find { |port| port.name.to_sym == name.to_sym }
         return res if res
       end
-      p @entities
-      raise "port #{name} is not exist in [#{@entities.map(&:name).join(", ")}]"
-    end
-
-    def entity_scan(parsers)
-      parsers.each do |parser|
-        @entities << parser.entity if parser.have_entity?
-        parser.components.each do |component|
-          @entities << component
-        end
-      end
+      raise "port #{name} is not exist in [#{entities.map(&:name).join(", ")}]"
     end
 
     def packages_scan(parsers)

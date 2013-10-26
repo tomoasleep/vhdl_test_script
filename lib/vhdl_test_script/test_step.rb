@@ -3,7 +3,7 @@ module VhdlTestScript
     attr_reader :in_mapping, :out_mapping, :colck_mapping
     def self.divide_by_direction(mapping)
       ingroup, out_mapping = mapping.
-        partition{ |port, _| port.in? }
+        partition{ |port, _| port.can_assign? }
 
       clock_mapping, in_mapping = ingroup.partition{ |_, v| v == :rising_edge }
       [in_mapping, out_mapping, clock_mapping]

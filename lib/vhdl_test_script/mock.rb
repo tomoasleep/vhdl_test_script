@@ -1,9 +1,8 @@
 module VhdlTestScript
   class Mock < Actor
-    def steps
-      @steps ||= @scenario.steps.map do |step|
-        step.in(@entity.ports).reverse
-      end
+    def initialize(original_entity, scenario)
+      @entity = original_entity.mocknize
+      @scenario = scenario
     end
 
     def test_file

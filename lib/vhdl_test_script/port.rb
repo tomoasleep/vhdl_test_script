@@ -2,8 +2,9 @@ module VhdlTestScript
   class Port
     attr_reader :name
 
-    def initialize(name, direction, type)
+    def initialize(name, direction, type, can_assign = nil)
       @name, @direction, @type = name, direction, type
+      @can_assign = if can_assign.nil? then in? else can_assign end
     end
 
     def port_definition
@@ -36,6 +37,14 @@ module VhdlTestScript
 
     def in?
       @direction == :in
+    end
+
+    def can_assign?
+      @can_assign
+    end
+
+    def assign_abilities_reverse
+      Port.new(@name, @direction, @type, !@can_assign)
     end
   end
 end
