@@ -9,10 +9,11 @@ module VhdlTestScript
       [in_mapping, out_mapping, clock_mapping]
     end
 
-    def initialize(in_mapping, out_mapping, clock_mapping)
+    def initialize(in_mapping, out_mapping, clock_mapping, origin_step = nil)
       @in_mapping = in_mapping
       @out_mapping = out_mapping
       @clock_mapping = clock_mapping
+      @origin = origin_step
     end
 
     def to_vhdl
@@ -21,13 +22,17 @@ module VhdlTestScript
     end
 
     def reverse
-      TestStep.new(@out_mapping, @in_mapping, @clock_mapping)
+      TestStep.new(@out_mapping, @in_mapping, @clock_mapping, origin)
     end
 
     def in(ports)
       mapping = [@in_mapping, @out_mapping, @clock_mapping].
         map { |m| m.select { |p,_| ports.member?(p) } }
-      TestStep.new(*mapping)
+      TestStep.new(*mapping, origin)
+    end
+
+    def origin
+      @origin.nil? || @origin == self ? self : @origin.origin
     end
 
     private
