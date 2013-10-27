@@ -16,6 +16,12 @@ module VhdlTestScript
       end
     end
 
+    def generic_assigns
+      @generic_assigns ||= @scenario.generic_assigns.select do |generic, _|
+        entity.generics.any? { |g| generic == g }
+      end
+    end
+
     def test_file
       @test_file ||=
         TestFile.new(self, File.expand_path(

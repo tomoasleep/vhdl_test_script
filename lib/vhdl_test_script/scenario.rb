@@ -13,12 +13,12 @@ module VhdlTestScript
     end
 
     attr_accessor :steps
-    attr_reader :example, :package_names, :dut
+    attr_reader :example, :package_names, :dut, :generic_assigns
     def initialize(dut_path, test_path, &scenario_block)
       @test_path = test_path
       @dut_path = File.expand_path(dut_path, File.dirname(@test_path))
       @scenario_block = scenario_block
-      @mocks = {}; @entities = []; @steps = []; @package_names = [];
+      @mocks = {}; @entities = []; @steps = []; @package_names = []; @generic_assigns = {};
       @dependencies = []; @dependencies_pathes = []; @dummy_entities = {};
 
       load_dut(@dut_path)
@@ -48,6 +48,17 @@ module VhdlTestScript
     def tmpdir
       require 'tmpdir'
       @tmpdir ||= Dir.mktmpdir
+    end
+
+    def assign_generic(generic, value)
+      case generic
+      when Generic
+        @generic_assigns[generic] = value
+      else
+        generic_name = generic.to_s
+        generic_by_name = @dut.generics.find {|g| g.name == generic_name }
+        @generic_assigns[generic_by_name] = value
+      end
     end
 
     def run

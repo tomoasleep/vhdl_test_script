@@ -41,7 +41,8 @@ module VhdlTestScript
           map { |line, default| [*line.strip.split(":"), default] }.
           # ["enable, push", "std_logic", " '1'"]
           select { |names, type, default| ! type.nil? }.
-          map { |names, type, default| [names.split(','), type.strip, default.strip]  }.
+          map { |names, type, default| [names.split(','), type.strip,
+                                        (default ? default.strip : nil)]  }.
           # [["enable", " push"], in, std_logic]"
           map { |names, type, default|
             names.map { |name|

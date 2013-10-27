@@ -3,13 +3,14 @@ use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 
 entity register_file is
-
+  generic( value : std_logic_vector(2 downto 0) );
   port (
     input  : in  std_logic_vector(2 downto 0);
     update : in std_logic;
     output  : out std_logic_vector(2 downto 0);
     reg  : out std_logic_vector(2 downto 0);
     calc_result: out std_logic_vector(2 downto 0);
+    genericv : out std_logic_vector(2 downto 0);
     clk : in  std_logic
     );
 
@@ -37,4 +38,5 @@ begin  -- behave
   end process;
   output <= input;
   reg <= data;
+  genericv <= value;
 end behave;

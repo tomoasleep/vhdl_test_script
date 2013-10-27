@@ -12,6 +12,14 @@ module VhdlTestScript
       ports.map(&:mapping).join(", ")
     end
 
+    def generic_definition_mappings(generics)
+      generics.map { |g| g.generic_definition }.join(";")
+    end
+
+    def generic_assign_mappings(generic_assigns)
+      generic_assigns.map { |g, v| g.mapping(v) }.join(",")
+    end
+
     def testcases_to_vhdl(steps)
       steps.map(&:to_vhdl).join("\n\n")
     end

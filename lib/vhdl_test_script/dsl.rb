@@ -11,6 +11,10 @@ module VhdlTestScript
       assign_test_ports(*ports)
     end
 
+    def generics(generics)
+      generics.map { |g, v| @scenario.assign_generic(g, v) }
+    end
+
     def clock(port)
       @clock = @scenario.find_port(port)
     end

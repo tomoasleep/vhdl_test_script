@@ -24,6 +24,24 @@ module VhdlTestScript
           expect(subject.steps.first.assert_mapping_after.length).to eq(2)
         }
       end
+
+      context "parse generic" do
+        let(:dut_path) { "../examples/register_file.vhd" }
+        let(:test_proc) { Proc.new { |dut|
+          clock :clk
+          generics value: 3
+
+          step do
+            assign input: 2, update: 1
+            assert_before reg: 1, genericv: 3
+            assert_after reg: 2, output: 2
+          end
+        } }
+
+        it {
+          expect(subject.generic_assigns.length).to eq(1)
+        }
+      end
     end
 
     describe ".run" do
@@ -254,6 +272,27 @@ module VhdlTestScript
           it {
             expect(subject.result.succeeded?).to be_true
             expect(subject.steps.length).to eq(2)
+          }
+        end
+      end
+
+      context "parse generic" do
+        context "1 successful step" do
+          let(:dut_path) { "../examples/register_file.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            clock :clk
+            generics value: 3
+
+            step do
+              assign input: 2, update: 1
+              assert_before genericv: 3
+              assert_after reg: 2, output: 2
+            end
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(1)
           }
         end
       end

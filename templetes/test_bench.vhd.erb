@@ -12,7 +12,13 @@ entity <%= with_test_prefix(entity.name) %> is
 end <%= with_test_prefix(entity.name) %>;
 
 architecture sim of <%= with_test_prefix(entity.name) %> is
-  component <%= entity.name %> port(
+  component <%= entity.name %>
+  <% unless actor.generic_assigns.empty? %>
+  generic (
+    <%= generic_definition_mappings(actor.generic_assigns.keys) %>
+  );
+  <% end %>
+  port(
     <%= ports_definitions(entity.ports) %>
     );
   end component;
@@ -21,9 +27,15 @@ architecture sim of <%= with_test_prefix(entity.name) %> is
 
 begin
 
-  dut: <%= entity.name %> port map (
-    <%= dut_mappings(entity.ports) %>
-  );
+  dut: <%= entity.name %>
+  <% unless actor.generic_assigns.empty? %>
+    generic map (
+      <%= generic_assign_mappings(actor.generic_assigns) %>
+    )
+  <% end %>
+    port map (
+      <%= dut_mappings(entity.ports) %>
+    );
 
   process begin
     <%= testcases_to_vhdl(actor.steps) %>
