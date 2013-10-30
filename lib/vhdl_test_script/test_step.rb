@@ -1,30 +1,28 @@
 module VhdlTestScript
   class TestStep
-    attr_reader :assign_mapping, :assert_mapping_before, :assert_mapping_after, :clock_mapping
+    attr_reader :assign_mapping, :assert_mapping_before, :assert_mapping_after
     def self.divide_by_direction(mapping)
-      ingroup, assert_mapping = mapping.
+      assign_mapping, assert_mapping = mapping.
         partition{ |port, _| port.can_assign? }
 
-      clock_mapping, assign_mapping = ingroup.partition{ |_, v| v == :rising_edge }
-      [assign_mapping, Hash.new, assert_mapping, clock_mapping]
+      [assign_mapping, Hash.new, assert_mapping]
     end
 
-    def initialize(assign_mapping, assert_mapping_before, assert_mapping_after, clock_mapping, origin_step = nil)
+    def initialize(assign_mapping, assert_mapping_before, assert_mapping_after, origin_step = nil)
       @assign_mapping = assign_mapping
       @assert_mapping_before = assert_mapping_before
       @assert_mapping_after = assert_mapping_after
-      @clock_mapping = clock_mapping
       @origin = origin_step
     end
 
     def to_vhdl
-      stimuli.join("\n") + "\n" + down_clock.join("\n") + "\nwait for 0.5 ns;\n" +
-        assertion(@assert_mapping_before) + "\nwait for 0.5 ns;\n" + up_clock.join("\n") +
-        "\nwait for 0.5 ns;\n" + assertion(@assert_mapping_after) + "\nwait for 0.5 ns;\n"
+      stimuli.join("\n") + "\n" + "\nwait for 0.5 ns;\n" +
+        assertion(@assert_mapping_before) + "\nwait for 1 ns;\n" +
+        assertion(@assert_mapping_after) + "\nwait for 0.5 ns;\n"
     end
 
     def in(ports)
-      mapping = [@assign_mapping, @assert_mapping_before, @assert_mapping_after, @clock_mapping].
+      mapping = [@assign_mapping, @assert_mapping_before, @assert_mapping_after].
         map { |m| m.select { |p,_| ports.member?(p) } }
       TestStep.new(*mapping, origin)
     end
@@ -38,14 +36,6 @@ module VhdlTestScript
       @assign_mapping.map do |port, value|
         port.assignment(value)
       end
-    end
-
-    def down_clock
-      @clock_mapping.map { |port, _| port.assignment_min }
-    end
-
-    def up_clock
-      @clock_mapping.map { |port, _| port.assignment_max }
     end
 
     def assertion(mapping)

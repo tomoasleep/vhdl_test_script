@@ -25,6 +25,10 @@ module VhdlTestScript
       @testbench = TestBench.new(@dut, self)
     end
 
+    def actors
+      [@testbench, *@mocks.values]
+    end
+
     def load_dependencies(files)
       abs_pathes = files.map { |f| File.expand_path(f, File.dirname(@test_path))}
       files =  abs_pathes.map { |f| Dir[f] }.flatten
@@ -91,6 +95,11 @@ module VhdlTestScript
       else
         port_by_name(key)
       end
+    end
+
+    def set_clock(port)
+      target_actor = actors.find { |actor| actor.entity.ports.member?(port) }
+      target_actor.clock = port
     end
 
     def port_by_name(name)

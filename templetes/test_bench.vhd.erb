@@ -24,6 +24,7 @@ architecture sim of <%= with_test_prefix(entity.name) %> is
   end component;
 
   <%= signal_definitions(entity.ports) %>
+  signal sim_finish_flag : boolean := false;
 
 begin
 
@@ -39,8 +40,11 @@ begin
 
   process begin
     <%= testcases_to_vhdl(actor.steps) %>
-  wait;
+    sim_finish_flag <= true;
+    wait;
   end process;
+
+  <%= clock_process %>
 
 end sim;
 

@@ -16,7 +16,7 @@ module VhdlTestScript
     end
 
     def clock(port)
-      @clock = @scenario.find_port(port)
+      @scenario.set_clock(@scenario.find_port(port))
     end
 
     def step(*ups, &block)
@@ -61,7 +61,7 @@ module VhdlTestScript
     def gen_step(ups)
       assignments = parse_step_arguments(ups)
       TestStep.new(
-        *TestStep.divide_by_direction(add_clockupdate(assignments))
+        *TestStep.divide_by_direction(assignments)
       )
     end
 
@@ -69,8 +69,7 @@ module VhdlTestScript
       pa = step_block_parser
       step_ports = [pa.assign_ports, pa.assert_ports_before, pa.assert_ports_after].
         map { |m| parse_step_arguments(m, pa.testports) }
-      clock_port = if @clock then {@clock => :rising_edge} else {} end
-      TestStep.new(*step_ports, clock_port)
+      TestStep.new(*step_ports)
     end
 
     def parse_step_arguments(ups, testports = @testports)
@@ -82,11 +81,6 @@ module VhdlTestScript
       else
         assignments = remove_not_assign(Hash[testports.zip(ups)])
       end
-    end
-
-    def add_clockupdate(hash)
-      hash[@clock] = :rising_edge if @clock
-      hash
     end
 
     def remove_not_assign(hash)

@@ -1,6 +1,7 @@
 module VhdlTestScript
   class Actor
     attr_reader :entity, :scenario, :example
+    attr_accessor :clock
     def self.world
       VhdlTestScript.world
     end

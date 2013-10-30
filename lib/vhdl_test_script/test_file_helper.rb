@@ -32,5 +32,15 @@ module VhdlTestScript
       package_names.map { |package_name| "use work.#{package_name}.all;"}.
         join("\n")
     end
+
+    def clock_process
+      return unless actor.clock
+      erb = ERB.new(File.read(File.expand_path("../../../templetes/clock.vhd.erb", __FILE__)))
+      erb.result(binding)
+    end
+
+    def clock_name
+      actor.clock.name if actor.clock
+    end
   end
 end
