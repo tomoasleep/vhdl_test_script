@@ -21,6 +21,7 @@ require "vhdl_test_script/test_bench"
 require "vhdl_test_script/test_file_helper"
 require "vhdl_test_script/test_file"
 require "vhdl_test_script/result_formatter"
+require "vhdl_test_script/wait"
 
 module VhdlTestScript
   class << self

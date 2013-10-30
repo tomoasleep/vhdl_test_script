@@ -27,6 +27,10 @@ module VhdlTestScript
       end
     end
 
+    def wait_step(length)
+      @scenario.steps << VhdlTestScript::Wait.new(length)
+    end
+
     def dependencies(*pathes)
       @scenario.load_dependencies(pathes)
     end

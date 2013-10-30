@@ -296,6 +296,26 @@ module VhdlTestScript
           }
         end
       end
+
+      context "parse wait_step" do
+        context "1 successful step" do
+          let(:dut_path) { "../examples/state_machine.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            dependencies "../examples/state_machine_lib.vhd"
+            clock :clk
+
+            step reset: 1, state: "STATE_A"
+            step reset: 0
+            wait_step 2
+            step input: "ORDER_A", state: "STATE_C"
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(4)
+          }
+        end
+      end
     end
   end
 end
