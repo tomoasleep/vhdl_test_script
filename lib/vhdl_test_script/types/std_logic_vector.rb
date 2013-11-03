@@ -31,6 +31,10 @@ module VhdlTestScript::Types
       "std_logic_vector(#{@length-1} downto 0)"
     end
 
+    def all_assign(v)
+      "\"#{v * @length}\""
+    end
+
     def format(v)
       case v
       when VhdlTestScript::Value

@@ -22,6 +22,7 @@ module VhdlTestScript
           it { should == "test <= '1';" }
         end
       end
+
       describe 'std_logic_vector(8)' do
         let(:port) { Port.new('test', :in, Types::StdLogicVector.new(8)) }
 
@@ -30,6 +31,32 @@ module VhdlTestScript
           it { should == 'test <= "00000000";' }
         end
       end
+    end
+
+    describe '#in' do
+      subject { Port.new('test', :inout, Types::StdLogic.new) }
+
+      it {
+        expect(subject.in?).to be_false
+        expect(subject.inout?).to be_true
+        expect(subject.in.in?).to be_true
+        expect(subject.in.inout?).to be_false
+        expect(subject.in.can_assign?).to be_true
+        expect(subject.in == subject).to be_true
+      }
+    end
+
+    describe '#out' do
+      subject { Port.new('test', :inout, Types::StdLogic.new) }
+
+      it {
+        expect(subject.in?).to be_false
+        expect(subject.inout?).to be_true
+        expect(subject.out.in?).to be_false
+        expect(subject.out.inout?).to be_false
+        expect(subject.out.can_assign?).to be_false
+        expect(subject.out == subject).to be_true
+      }
     end
   end
 end

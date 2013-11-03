@@ -90,7 +90,7 @@ module VhdlTestScript
     end
 
     def find_port(key)
-      if key.class == VhdlTestScript::Port
+      if key.kind_of? VhdlTestScript::Port
         key
       else
         port_by_name(key)

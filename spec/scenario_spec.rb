@@ -42,6 +42,21 @@ module VhdlTestScript
           expect(subject.generic_assigns.length).to eq(1)
         }
       end
+      
+      context "parse inout" do
+        let(:dut_path) { "../examples/latch_inout.vhd" }
+        let(:test_proc) { Proc.new { |dut|
+          ports dut.data.in, dut.data.out, dut.we, dut.mem
+          clock :clk
+
+          step 1, 1, 1, 1
+        } }
+
+        it {
+          expect(subject.steps.first.assign_mapping.length).to eq(2)
+          expect(subject.steps.first.assert_mapping_after.length).to eq(2)
+        }
+      end
     end
 
     describe ".run" do
@@ -367,6 +382,41 @@ module VhdlTestScript
           it {
             expect(subject.result.succeeded?).to be_true
             expect(subject.steps.length).to eq(3) 
+          }
+        end
+      end
+
+      context "parse inout" do
+        context "4 successful step" do
+          let(:dut_path) { "../examples/latch_inout.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            ports dut.data.in, dut.data.out, dut.we, dut.mem
+            clock :clk
+
+            step 1, 1, 1, 1
+            step z, 1, 0, 1
+            step z, _, 0, 1
+            step 2, _, 1, 2
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(4)
+          }
+        end
+
+        context "1 successful step" do
+          let(:dut_path) { "../examples/latch_inout.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            ports dut.data.in, dut.data.out, dut.we
+            clock :clk
+
+            step z, z, 1
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(1)
           }
         end
       end

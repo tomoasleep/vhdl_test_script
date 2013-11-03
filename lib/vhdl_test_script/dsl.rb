@@ -45,6 +45,10 @@ module VhdlTestScript
       end
     end
 
+    def z
+      HighImpedance.new
+    end
+
     def _
       :dont_assign
     end

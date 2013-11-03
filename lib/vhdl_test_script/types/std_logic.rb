@@ -20,6 +20,10 @@ module VhdlTestScript::Types
       0
     end
 
+    def all_assign(v)
+      "\'#{v}\'"
+    end
+
     def format(v)
       case v
       when VhdlTestScript::Value

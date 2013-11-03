@@ -23,5 +23,9 @@ module VhdlTestScript::DSL
     def _
       :dont_assign
     end
+
+    def z
+      VhdlTestScript::HighImpedance.new
+    end
   end
 end
