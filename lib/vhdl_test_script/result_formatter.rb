@@ -10,7 +10,9 @@ module VhdlTestScript
         "FAILED: Test did not run because of compilation error"
       else
         lines.reduce([]) do |formatted, l|
+          context = $1 if l.match(/(In context .*), FAILED:/)
           if l.match(/(FAILED: .*) expected to (.*), but (.*)/)
+            formatted << "#{context}:" if context
             formatted << $1
             formatted << "  expected: " + $2
             formatted << "    actual: " + replace_binary($3)

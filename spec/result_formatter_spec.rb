@@ -58,5 +58,21 @@ FAILED: op = 44, rx_done = 0, stage = 1
           to eq('next_stage = 2, alu_control = 0')
       end
     end
+
+    context "test run, but one case failed in context" do
+      let(:output) { %q{/tmp/d20131109-16426-vit2e9/test_register_file.vhd:260:1:@47500ps:(assertion warning): In context alu, FAILED:  expected to a3 = 3, wd3 = 97, but a3 = 00010, wd3 = 00000000000000000000000001100001} }
+
+      it { should_not be_compile_error  }
+      it { should_not be_succeeded }
+      it "should pretty print the result" do
+        subject.format.should include %q{
+In context alu:
+FAILED: 
+  expected: a3 = 3, wd3 = 97
+    actual: a3 = 2, wd3 = 97
+}.strip
+      end
+      its(:count_failure) { should == 1 }
+    end
   end
 end

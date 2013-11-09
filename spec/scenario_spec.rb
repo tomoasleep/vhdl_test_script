@@ -57,6 +57,24 @@ module VhdlTestScript
           expect(subject.steps.first.assert_mapping_after.length).to eq(2)
         }
       end
+
+      context "parse context block" do
+        let(:dut_path) { "../examples/register_file.vhd" }
+        let(:test_proc) { Proc.new { |dut|
+          ports :input, :output, :update, :reg
+          clock :clk
+
+          context "test group" do
+            step input: 2, update: 1, reg: 2, output: 2
+          end
+        } }
+
+        it {
+          expect(subject.steps.length).to eq(1)
+          expect(subject.steps.first.assign_mapping.length).to eq(2)
+          expect(subject.steps.first.assert_mapping_after.length).to eq(2)
+        }
+      end
     end
 
     describe ".run" do

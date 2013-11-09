@@ -19,6 +19,10 @@ module VhdlTestScript
       @scenario.set_clock(@scenario.find_port(port))
     end
 
+    def context(name = nil, &block)
+      sub_desc = sub_scenario(name, &block)
+    end
+
     def step(*ups, &block)
       if block
         step_block(&block)
@@ -69,7 +73,7 @@ module VhdlTestScript
     def gen_step(ups)
       assignments = parse_step_arguments(ups)
       TestStep.new(
-        *TestStep.divide_by_direction(assignments)
+        *TestStep.divide_by_direction(assignments), nil, @name
       )
     end
 
@@ -77,7 +81,7 @@ module VhdlTestScript
       pa = step_block_parser
       step_ports = [pa.assign_ports, pa.assert_ports_before, pa.assert_ports_after].
         map { |m| parse_step_arguments(m, pa.testports) }
-      TestStep.new(*step_ports)
+      TestStep.new(*step_ports, nil, @name)
     end
 
     def parse_step_arguments(ups, testports = @testports)

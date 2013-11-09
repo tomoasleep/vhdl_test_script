@@ -8,8 +8,15 @@ module VhdlTestScript
       desc
     end
 
+    attr_accessor :name
     def initialize(scenario)
       @scenario = scenario
+    end
+
+    def sub_scenario(name, &proc)
+      subsc = ScenarioDescription.new(@scenario)
+      subsc.name = name
+      subsc.instance_exec &proc
     end
   end
 end
