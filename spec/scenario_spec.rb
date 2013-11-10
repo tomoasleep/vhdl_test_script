@@ -316,6 +316,60 @@ module VhdlTestScript
           }
         end
       end
+
+      context "make error dut to lack of packages" do
+        context "3 successful steps" do
+          let(:dut_path) { "../examples/illigal_dut.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+          } }
+
+          it {
+            expect(subject.result.compile_error?).to be_true
+          }
+        end
+      end
+
+      context "make success in any order" do
+        context "entity after library it depending on" do
+          let(:dut_path) { "../examples/datapath.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            dependencies "../examples/state_machine_lib.vhd",
+              "../examples/state_machine.vhd"
+
+            ports dut.input, dut.output
+            clock dut.clk
+
+            step 3, "STATE_A"
+            step 1, "STATE_B"
+            step 0, "STATE_C"
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(3) 
+          }
+        end
+
+        context "entity before library it depending on" do
+          let(:dut_path) { "../examples/datapath.vhd" }
+          let(:test_proc) { Proc.new { |dut|
+            dependencies "../examples/state_machine.vhd",
+            "../examples/state_machine_lib.vhd"
+
+            ports dut.input, dut.output
+            clock dut.clk
+
+            step 3, "STATE_A"
+            step 1, "STATE_B"
+            step 0, "STATE_C"
+          } }
+
+          it {
+            expect(subject.result.succeeded?).to be_true
+            expect(subject.steps.length).to eq(3) 
+          }
+        end
+      end
     end
   end
 end

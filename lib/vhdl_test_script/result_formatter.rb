@@ -21,7 +21,7 @@ module VhdlTestScript
     end
 
     def compile_error?
-      @output.include?("ghdl: compilation error")
+      @output.include?("ghdl: compilation error") || @output.include?("ghdl: Please elaborate your design")
     end
 
     def succeeded?
