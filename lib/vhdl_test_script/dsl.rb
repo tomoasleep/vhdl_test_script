@@ -58,12 +58,8 @@ module VhdlTestScript
     end
 
     private
-    def assign_test_ports(*names)
-      @testports = names.map do |i|
-        @scenario.find_port(i)
-      end
-    end
-
+    # TODO Move to scenario descriptions (implement method)
+    #      dsl has only interface method
     def step_block(&block)
       step_block_parser = StepBlock.new(@testports)
       step_block_parser.instance_eval &block
@@ -73,7 +69,7 @@ module VhdlTestScript
     def gen_step(ups)
       assignments = parse_step_arguments(ups)
       TestStep.new(
-        *TestStep.divide_by_direction(assignments), nil, @name
+        *TestStep.divide_by_direction(assignments), nil, name
       )
     end
 
@@ -81,7 +77,7 @@ module VhdlTestScript
       pa = step_block_parser
       step_ports = [pa.assign_ports, pa.assert_ports_before, pa.assert_ports_after].
         map { |m| parse_step_arguments(m, pa.testports) }
-      TestStep.new(*step_ports, nil, @name)
+      TestStep.new(*step_ports, nil, name)
     end
 
     def parse_step_arguments(ups, testports = @testports)

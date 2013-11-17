@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 module VhdlTestScript
-  describe ResultFormatter do
+  describe Result do
     let(:dut_file) { "examples/alu.vhd/" }
-    subject(:formatted_result) { described_class.new(output) }
+    subject(:formatted_result) { described_class.new(output, "dut", "tmpdir") }
 
     context "test did not run" do
       let(:output) { %q{
@@ -35,7 +35,7 @@ FAILED: op = 44, rx_done = 0, stage = 1
     actual: next_stage = 2, bus_to_reg = 0, alu_src = 1, pc_src = 0, reg_dst = 0, alu_control = 0, mem_write = 0, send_enable = 0, reg_write = 0, rx_enable = 0
 }.strip
       end
-      its(:count_failure) { should == 1 }
+      it { expect(subject.failures.length).to eq(1) }
     end
 
     context "test succeeded, output nothing" do
@@ -46,7 +46,7 @@ FAILED: op = 44, rx_done = 0, stage = 1
 
     describe '#replace_binary' do
       def replace_binary(str)
-        ResultFormatter.new('').replace_binary(str)
+        Result.new("", "", "").replace_binary(str)
       end
 
       specify do
@@ -65,14 +65,15 @@ FAILED: op = 44, rx_done = 0, stage = 1
       it { should_not be_compile_error  }
       it { should_not be_succeeded }
       it "should pretty print the result" do
-        subject.format.should include %q{
-In context alu:
+        expect(subject.format).to include %q{
 FAILED: 
   expected: a3 = 3, wd3 = 97
     actual: a3 = 2, wd3 = 97
 }.strip
+        expect(subject.format).to include %q{dut alu}.strip
+        expect(subject.format).to include %q{Time: 47500ps}.strip
       end
-      its(:count_failure) { should == 1 }
+      it { expect(subject.failures.length).to eq(1) }
     end
   end
 end

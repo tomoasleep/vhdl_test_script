@@ -66,13 +66,24 @@ module VhdlTestScript
 
           context "test group" do
             step input: 2, update: 1, reg: 2, output: 2
+            context "has child context" do
+              step input: 2, update: 1, reg: 2, output: 2
+            end
           end
         } }
 
         it {
-          expect(subject.steps.length).to eq(1)
+          expect(subject.steps.length).to eq(2)
           expect(subject.steps.first.assign_mapping.length).to eq(2)
           expect(subject.steps.first.assert_mapping_after.length).to eq(2)
+        }
+        it {
+          expect(subject.description.contexts.length).to eq(1)
+          expect(subject.description.contexts.first.name).to eq("test group")
+        }
+        it {
+          expect(subject.description.contexts.
+                 first.contexts.first.name).to eq("test group has child context")
         }
       end
     end
@@ -105,7 +116,7 @@ module VhdlTestScript
 
           it {
             expect(subject.result.failed?).to be_true
-            expect(subject.result.count_failure).to eq(1)
+            expect(subject.result.failures.length).to eq(1)
             expect(subject.steps.length).to eq(1)
           }
         end
@@ -122,7 +133,7 @@ module VhdlTestScript
 
           it {
             expect(subject.result.failed?).to be_true
-            expect(subject.result.count_failure).to eq(2)
+            expect(subject.result.failures.length).to eq(2)
             expect(subject.steps.length).to eq(2)
           }
         end

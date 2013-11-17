@@ -1,6 +1,6 @@
 module VhdlTestScript
   class Configuration
-    attr_reader :out
+    attr_reader :out, :include_tags, :exclude_tags, :verbose
     def initialize
       @loaded_pathes = []
     end
@@ -16,7 +16,16 @@ module VhdlTestScript
 
     def parse_options(options = {})
       out = options[:out] ? options[:out] : STDOUT
+      @include_tags = options[:include_tags] ? options[:include_tags] : []
+      @exclude_tags = options[:exclude_tags] ? options[:exclude_tags] : []
+      @verbose = options[:verbose]
       VhdlTestScript.world.register_out(out)
+    end
+
+    def scenario_options
+      options = {
+        verbose: verbose
+      }
     end
   end
 end

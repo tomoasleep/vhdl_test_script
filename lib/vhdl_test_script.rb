@@ -22,7 +22,7 @@ require "vhdl_test_script/test_step"
 require "vhdl_test_script/test_bench"
 require "vhdl_test_script/test_file_helper"
 require "vhdl_test_script/test_file"
-require "vhdl_test_script/result_formatter"
+require "vhdl_test_script/result"
 require "vhdl_test_script/wait"
 
 module VhdlTestScript
@@ -37,6 +37,11 @@ module VhdlTestScript
 
     def scenario(*args, &scenario_proc)
       world.register_scenario(Scenario.describe(*args, &scenario_proc))
+    end
+
+    def reset
+      @world = World.new
+      @configuration = Configuration.new
     end
   end
 end

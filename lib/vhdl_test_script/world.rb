@@ -1,16 +1,51 @@
 module VhdlTestScript
+  class ScenarioGroup
+    include Enumerable
+    attr_reader :members
+    def initialize(members = [])
+      @members = members
+    end
+
+    def each(&block)
+      @members.each &block
+    end
+
+    def with_tags(*tags)
+      ScenarioGroup.new select {|s| tags.all? {|t| s.include? t}}
+    end
+
+    def without_tags(*tags)
+      ScenarioGroup.new select {|s| tags.none? {|t| s.include? t}}
+    end
+
+    def <<(scenario)
+      @members << scenario
+    end
+
+    def run
+      each{|s| s.run(VhdlTestScript.configuration.scenario_options) }
+      self
+    end
+
+    def report
+      failures = map {|s| s.result.failures }.flatten
+      step_length = map {|s| s.steps.length }.inject(:+) || 0
+      VhdlTestScript.world.reporter.report_results failures, step_length
+    end
+  end
+
   class World
     attr_accessor :current_test_path
-    attr_reader :vhdl_list, :dut, :scenario_list, :reporter
+    attr_reader :vhdl_list, :dut, :scenario_group, :reporter
     def initialize
       @vhdl_list = []
-      @scenario_list = []
+      @scenario_group = ScenarioGroup.new
       @constants = {}
       @subtypes = {}
     end
 
     def register_scenario(scenario)
-      @scenario_list << scenario
+      @scenario_group << scenario
     end
 
     def register_vhdl(path)

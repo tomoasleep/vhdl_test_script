@@ -5,7 +5,8 @@ module VhdlTestScript
   class Scenario
     def self.describe(*all_args, &scenario_block)
       dut_path, *args = *all_args
-      Scenario.new(dut_path, VhdlTestScript.world.current_test_path, &scenario_block)
+      tags = parse_args(args)
+      Scenario.new(dut_path, VhdlTestScript.world.current_test_path, tags: tags, &scenario_block)
     end
 
     def self.world
@@ -13,16 +14,27 @@ module VhdlTestScript
     end
 
     attr_accessor :steps
-    attr_reader :example, :package_names, :dut, :generic_assigns
-    def initialize(dut_path, test_path, &scenario_block)
+    attr_reader :example, :package_names, :dut, :generic_assigns, :output, :description, :tags
+    def initialize(dut_path, test_path, options = {}, &scenario_block)
       @test_path = test_path
       @dut_path = File.expand_path(dut_path, File.dirname(@test_path))
       @scenario_block = scenario_block
       @mocks = {}; @entities = []; @steps = []; @package_names = []; @generic_assigns = {};
       @dependencies = []; @dependencies_pathes = []; @dummy_entities = {};
 
+      parse_options(options)
       load_dut(@dut_path)
       @testbench = TestBench.new(@dut, self)
+    end
+
+    def parse_options(options)
+      @tags = []
+      options.each do |k, v|
+        case k
+        when :tags
+          @tags += v
+        end
+      end
     end
 
     def actors
@@ -65,10 +77,16 @@ module VhdlTestScript
       end
     end
 
-    def run
+    def run(options = {})
       parse_description
       create_test_files
+      report_output_header
       run_test
+      report_output if options[:verbose]
+      self
+    end
+
+    def report
       report_result
       self
     end
@@ -138,14 +156,30 @@ module VhdlTestScript
     end
 
     private
+    def self.parse_args(args)
+      tags = args.reduce([]) do |result, arg|
+        case arg
+        when Symbol
+          result << arg
+        end
+      end
+    end
+
     def run_test
       @output = @runner_script.run
-      @result_formatter = ResultFormatter.new(@output)
+      @result_formatter = Result.parse(self, @output)
+    end
+
+    def report_output_header
+      Scenario.world.reporter.report_test_header(@dut.name, tmpdir)
+    end
+
+    def report_output
+      Scenario.world.reporter.output(@output)
     end
 
     def report_result
-      Scenario.world.reporter.output(@output)
-      Scenario.world.reporter.report_result(self, @result_formatter)
+      Scenario.world.reporter.report_results(self)
     end
   end
 end
