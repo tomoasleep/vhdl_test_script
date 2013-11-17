@@ -175,7 +175,7 @@ module VhdlTestScript
     end
 
     def report_output
-      Scenario.world.reporter.output(@output)
+      Scenario.world.reporter.report_output(@output)
     end
 
     def report_result

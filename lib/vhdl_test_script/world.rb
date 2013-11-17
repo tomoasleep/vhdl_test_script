@@ -11,11 +11,11 @@ module VhdlTestScript
     end
 
     def with_tags(*tags)
-      ScenarioGroup.new select {|s| tags.all? {|t| s.include? t}}
+      ScenarioGroup.new select {|s| tags.all? {|t| s.tags.include? t}}
     end
 
     def without_tags(*tags)
-      ScenarioGroup.new select {|s| tags.none? {|t| s.include? t}}
+      ScenarioGroup.new select {|s| tags.none? {|t| s.tags.include? t}}
     end
 
     def <<(scenario)

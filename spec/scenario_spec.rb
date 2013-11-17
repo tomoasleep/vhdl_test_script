@@ -86,6 +86,24 @@ module VhdlTestScript
                  first.contexts.first.name).to eq("test group has child context")
         }
       end
+      context "parse tag" do
+        subject(:scenario) {
+          Scenario.new(dut_path, File.expand_path(__FILE__), tags: tags, &test_proc).parse_description }
+        let(:tags) { [:a, :b] }
+        let(:dut_path) { "../examples/register_file.vhd" }
+        let(:test_proc) { Proc.new { |dut|
+          ports :input, :output, :update, :reg
+          clock :clk
+
+            step input: 2, update: 1, reg: 2, output: 2
+            step input: 2, update: 1, reg: 2, output: 2
+        } }
+
+        it {
+          expect(subject.steps.length).to eq(2)
+          expect(subject.tags).to eq([:a, :b])
+        }
+      end
     end
 
     describe ".run" do

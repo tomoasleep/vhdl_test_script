@@ -1,17 +1,55 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
-unless ARGV.size == 1 && File.file?(ARGV[0])
-  puts "Usage: vhdl_test_script TEST_FILE"
-  exit 1
-end
-
-
+require "optparse"
 # resolve bin path, ignoring symlinks
 require "pathname"
 bin_file = Pathname.new(__FILE__).realpath
 
 # add self to libpath
 $:.unshift File.expand_path("../../lib", bin_file)
-
 require "vhdl_test_script"
-VhdlTestScript::Runner.new([ARGV[0]]).run
+
+include_tags = []
+exclude_tags = []
+
+opts = OptionParser.new do |opts|
+  opts.banner = "VhdlTestScript: VHDL test runner written with domain-specific language on ruby"
+  opts.define_head "Usage: vhdl_test_script <testfiles> [options]"
+  opts.separator ""
+  opts.separator "Options:"
+
+  opts.on("-t", "--tag TAG", "Run scenarios with the specified tag, or exclude scenarios by adding ~ before the tag") do |v|
+    if v.match(/^~/)
+      exclude_tags << v.gsub(/^~/, "").gsub(/^:/, "").to_sym
+    else
+      include_tags << v.gsub(/^:/, "").to_sym
+    end
+  end
+
+  opts.on("-V", "--verbose", "Show detail messages in running tests") do
+    puts VhdlTestScript.VERSION
+    exit
+  end
+
+  opts.on_tail("-?", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+  opts.on_tail("-v", "--version", "Show version") do
+    puts VhdlTestScript.VERSION
+    exit
+  end
+end
+opts.parse!
+
+unless ARGV.size > 0 && ARGV.all? {|arg| File.file?(arg) }
+  puts opts
+  exit 1
+end
+
+VhdlTestScript::Runner.new(
+  ARGV,
+    include_tags: include_tags,
+    exclude_tags: exclude_tags
+).run
