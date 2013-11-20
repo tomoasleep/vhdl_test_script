@@ -11,6 +11,7 @@ require "vhdl_test_script"
 
 include_tags = []
 exclude_tags = []
+options = {}
 
 opts = OptionParser.new do |opts|
   opts.banner = "VhdlTestScript: VHDL test runner written with domain-specific language on ruby"
@@ -27,8 +28,7 @@ opts = OptionParser.new do |opts|
   end
 
   opts.on("-V", "--verbose", "Show detail messages in running tests") do
-    puts VhdlTestScript.VERSION
-    exit
+    options[:verbose] = true
   end
 
   opts.on_tail("-?", "--help", "Show this message") do
@@ -37,7 +37,7 @@ opts = OptionParser.new do |opts|
   end
 
   opts.on_tail("-v", "--version", "Show version") do
-    puts VhdlTestScript.VERSION
+    puts VhdlTestScript::VERSION
     exit
   end
 end
@@ -48,8 +48,6 @@ unless ARGV.size > 0 && ARGV.all? {|arg| File.file?(arg) }
   exit 1
 end
 
-VhdlTestScript::Runner.new(
-  ARGV,
-    include_tags: include_tags,
-    exclude_tags: exclude_tags
-).run
+options.merge!({include_tags: include_tags, exclude_tags: exclude_tags})
+
+VhdlTestScript::Runner.new(ARGV, options).run
