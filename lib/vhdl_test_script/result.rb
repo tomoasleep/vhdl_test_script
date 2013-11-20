@@ -2,7 +2,7 @@ module VhdlTestScript
   class TestFailure
     private
     def format_header
-      "#@dutname #@context (Test Directory: #@tmpdir, Time: #@time)"
+      "#@dutname #@context (Test directory: #@tmpdir, Time: #@time)"
     end
   end
 
