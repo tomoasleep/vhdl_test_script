@@ -1,6 +1,6 @@
 # VhdlTestScript
 
-VhdlTestScript is a test-driven development Tool for VHDL  
+VhdlTestScript is a test-driven development tool for VHDL.  
 (This Project is forked from [tomykaira/vhdl_doctest](https://github.com/tomykaira/vhdl_doctest))
 
 ## Dependency
@@ -46,10 +46,9 @@ VhdlTestScript.scenario DUT_PATH do |dut|
 end
 ```
 
-this ruby test bench is converted into a VHDL test bench when run vhdltestscript
+this ruby test bench is converted into a VHDL test bench when run vhdltestscript.
 
-Documentation of test scenario syntax is being developed now.
-Please read example codes in /example to know how to write test scenario.
+Documentation of test scenario syntax is being developed now.  Please read example codes in /example to know how to write test scenario.
 
 ## Issues And Features
 
