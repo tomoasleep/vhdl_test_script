@@ -1,5 +1,6 @@
 module VhdlTestScript::DSL
   class DummyEntity
+    class UndefinedPortError < NoMethodError; end
     def initialize(entity)
       @entity = entity
     end
@@ -10,7 +11,7 @@ module VhdlTestScript::DSL
       if port_by_name
         port_by_name
       else
-        raise NoMethodError
+        raise UndefinedPortError, "undefined port '#{action_name}'"
       end
     end
   end
