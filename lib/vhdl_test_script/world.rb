@@ -23,7 +23,13 @@ module VhdlTestScript
     end
 
     def run
-      each{|s| s.run(VhdlTestScript.configuration.scenario_options) }
+      each do |s|
+        begin
+          s.run(VhdlTestScript.configuration.scenario_options)
+        rescue => ex
+          s.fail(ex)
+        end
+      end
       self
     end
 

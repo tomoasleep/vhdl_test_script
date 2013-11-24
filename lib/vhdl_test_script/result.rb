@@ -50,13 +50,49 @@ module VhdlTestScript
     end
   end
 
+  class ExceptionFailure < TestFailure
+    def initialize(dutname, exception)
+      @dutname, @exception =
+        dutname, exception
+    end
+
+    def compile_error?
+      true
+    end
+
+    def format
+      "#{format_header}\n#{format_body}\n\n#{backtrace}"
+    end
+
+    def backtrace
+      "#{@exception.backtrace.first}: #{@exception.message}\n\tfrom #{@exception.backtrace[1..-1].join("\n\tfrom ")}"
+    end
+
+    def format_body
+      "FAILED: Test did not run because of uncaught exception"
+    end
+
+    def format_header
+      "#@dutname"
+    end
+  end
+
   class Result
     def self.parse(scenario, output)
       new(output, scenario.dut.name, scenario.tmpdir)
     end
 
+    def self.fail(scenario, exception)
+      new(nil, scenario.dut.name, nil).fail(exception)
+    end
+
     def initialize(output, dutname, tmpdir)
-      @dutname, @tmpdir, @output = dutname, tmpdir, output 
+      @dutname, @tmpdir, @output = dutname, tmpdir, output
+    end
+
+    def fail(exception)
+      @failures = [ExceptionFailure.new(@dutname, exception)]
+      self
     end
 
     def format
@@ -80,7 +116,7 @@ module VhdlTestScript
     end
 
     def compile_error?
-      @output.include?("ghdl: compilation error") || @output.include?("ghdl: Please elaborate your design")
+      @output.nil? || @output.include?("ghdl: compilation error") || @output.include?("ghdl: Please elaborate your design")
     end
 
     def succeeded?

@@ -91,6 +91,10 @@ module VhdlTestScript
       self
     end
 
+    def fail(exception)
+      @result_formatter = Result.fail(self, exception)
+    end
+
     def use_mock(entity_name)
       original_entity = @dut.components.find { |c| c.name == entity_name.to_s }
       if !original_entity
