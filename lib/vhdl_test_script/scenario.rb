@@ -111,14 +111,6 @@ module VhdlTestScript
       [@dut, *@mocks.map(&:entity)]
     end
 
-    def find_port(key)
-      if key.kind_of? VhdlTestScript::Port
-        key
-      else
-        port_by_name(key)
-      end
-    end
-
     def set_clock(port)
       target_actor = actors.find { |actor| actor.entity.ports.member?(port) }
       target_actor.clock = port
