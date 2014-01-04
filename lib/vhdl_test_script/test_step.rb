@@ -1,10 +1,12 @@
 module VhdlTestScript
   class TestStep
     attr_reader :assign_mapping, :assert_mapping_before, :assert_mapping_after
+    # TODO this name should be renamed to such as 'divide_by_assert_type'.
     def self.divide_by_direction(mapping)
       assign_mapping, assert_mapping = mapping.
         partition{ |port, _| port.can_assign? }
 
+      # TODO: Use hash {assert: portmaps, assign_before: portmaps, assign: portmaps}
       [assign_mapping, Hash.new, assert_mapping]
     end
 
