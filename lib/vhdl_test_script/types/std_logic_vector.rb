@@ -41,6 +41,9 @@ module VhdlTestScript::Types
         v.format(self)
       when String
         v
+      when Float
+        v_to_int =  [v].pack("f").unpack("I").first
+        format(v_to_int)
       else
         '"' + (2**@length + v).to_s(2)[-@length.. -1]+ '"'
       end

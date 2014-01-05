@@ -21,6 +21,7 @@ package vhdl_test_script_utils is
   function TO_OSTRING (VALUE : STD_LOGIC_VECTOR) return STRING;
   alias TO_OCTAL_STRING is TO_OSTRING [STD_LOGIC_VECTOR return STRING];
   function TO_HSTRING (VALUE : STD_LOGIC_VECTOR) return STRING;
+  function TO_HSTRING (VALUE : STD_LOGIC) return STRING;
   alias TO_HEX_STRING is TO_HSTRING [STD_LOGIC_VECTOR return STRING];
 
   type char_indexed_by_MVL9 is array (STD_ULOGIC) of CHARACTER;
@@ -100,6 +101,15 @@ package body vhdl_test_script_utils is
       end loop;
       return result;
     end if;
+  end function to_hstring;
+
+  function to_hstring (value     : STD_LOGIC) return STRING is
+    variable vector_value : std_ulogic_vector(0 downto 0);
+    variable result : STRING(1 to 1);
+  begin
+    vector_value(0) := value;
+    result := to_hstring(vector_value);
+    return result;
   end function to_hstring;
 
 -------------------------------------------------------------------
