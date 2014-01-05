@@ -45,9 +45,20 @@ module VhdlTestScript
       inputs = @assign_mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
       return '' if mapping.empty?
       cond = mapping.map { |port, value| port.equation(value) }.join(" and ")
-      expected = mapping.map { |port, value| "#{port.name} = #{value}" }.join(", ").gsub(/\"/, "'")
-      actual = mapping.map { |port, value| "#{port.name} = \" & to_string(#{port.name}) & \"" }.join(", ")
+      expected = mapping.map { |port, value| "#{port.name} = #{value_parse(value)}" }.join(", ").gsub(/\"/, "'")
+      actual = mapping.map { |port, value| "#{port.name} = 0x\" & to_hstring(#{port.name}) & \" (\" & to_string(#{port.name}) & \")" }.join(", ")
       %Q{assert #{ cond } report "#{ "In context #@name, " if @name }FAILED: #{inputs} expected to #{expected}, but #{actual}" severity warning;\n}
+    end
+
+    def value_parse(value)
+      case value
+      when Integer
+        "0x#{value.to_s(16).rjust(8, '0')} (#{value})"
+      when Float
+        value_parse([value].pack("f").unpack("I").first)
+      else
+        value
+      end
     end
   end
 end
